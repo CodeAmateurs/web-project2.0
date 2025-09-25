@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MESMTF/Personal Health Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reusing styles for consistency */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-image: url('https://plus.unsplash.com/premium_photo-1670459706285-5a62ed024286?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8UGVyc29uYWwlMjBIZWFsdGglMjBEYXNoYm9hcmR8ZW58MHx8MHx8fDA%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #333;
+            padding-top: 90px;
+            line-height: 1.6;
+            background-color: #f4f7f6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #009A44, #00642E);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo { display: flex; align-items: center; }
+        .logo img { height: 50px; margin-right: 15px; border-radius: 50%; }
+        .logo i { font-size: 2.5rem; margin-right: 15px; }
+        .logo h1 { font-size: 1.8rem; font-weight: 600; }
+        nav ul { display: flex; list-style: none; }
+        nav ul li { margin-left: 25px; }
+        nav ul li a { color: white; text-decoration: none; font-weight: 500; transition: all 0.3s ease; padding: 8px 12px; border-radius: 4px; display: flex; align-items: center; }
+        nav ul li a:hover { background-color: rgba(255, 255, 255, 0.2); }
+        nav ul li a i { margin-right: 6px; font-size: 1.1rem; }
+        nav ul li a.logout-btn { background-color: #ff6b6b; font-weight: 600; }
+        nav ul li a.logout-btn:hover { background-color: #ff5252; }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            background-color: #6c757d;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.5rem;
+        }
+        .back-btn:hover { background-color: #5a6268; }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section-title h1 { font-size: 2.2rem; margin-bottom: 15px; color: #009A44; }
+        .section-title p { color: #666; max-width: 700px; margin: 0 auto; }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .dashboard-card {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .dashboard-card h3 {
+            color: #009A44;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .dashboard-card h3 i {
+            margin-right: 10px;
+        }
+
+        .medication-list li, .history-list li {
+            list-style: none;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .medication-list input[type="checkbox"] {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+        }
+
+        .medication-list label {
+            cursor: pointer;
+        }
+
+        .medication-list input[type="checkbox"]:checked + label {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .history-item .date {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        thead th {
+            font-weight: 600;
+        }
+        .status-completed { color: #28a745; font-weight: bold; }
+        .status-due { color: #ffc107; font-weight: bold; }
+
+        .tips-list li {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+        }
+        .tips-list li::before {
+            content: '\f00c'; /* FontAwesome check icon */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #28a745;
+            position: absolute;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-laptop-medical"></i>
+                <img src="https://th.bing.com/th/id/OIP.rvsVTBcx442mamhkARD2QAAAAA?w=164&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="Logo">
+                <h1>MESMTF</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a></li>
+                    <li><a href="login.html" class="logout-btn">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <a href="dashboard.html" class="back-btn" title="Back to Dashboard">&larr;</a>
+        <div class="section-title">
+            <h1 id="welcome-title">My Health Dashboard</h1>
+            <p>Your personal space to manage and track your health journey.</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Medication Reminders -->
+            <div class="dashboard-card">
+                <h3><i class="fas fa-pills"></i>Today's Medication</h3>
+                <ul class="medication-list" id="medicationList">
+                    <!-- JS will populate this -->
+                </ul>
+            </div>
+
+            <!-- Recent Health History -->
+            <div class="dashboard-card">
+                <h3><i class="fas fa-file-medical-alt"></i>Recent Health History</h3>
+                <ul class="history-list" id="historyList">
+                    <!-- JS will populate this -->
+                </ul>
+                <a href="medical_records.html" style="color: #009A44; font-weight: 600; text-decoration: none;">View All Records &rarr;</a>
+            </div>
+
+            <!-- Vaccination Schedule -->
+            <div class="dashboard-card">
+                <h3><i class="fas fa-syringe"></i>Vaccination Schedule</h3>
+                <table id="vaccinationTable">
+                    <thead>
+                        <tr>
+                            <th>Vaccine</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- JS will populate this -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Lifestyle Tips -->
+            <div class="dashboard-card">
+                <h3><i class="fas fa-heartbeat"></i>Healthy Lifestyle Tips</h3>
+                <ul class="tips-list">
+                    <li>Drink at least 8 glasses of clean water daily.</li>
+                    <li>Aim for 30 minutes of moderate exercise most days of the week.</li>
+                    <li>Eat a balanced diet rich in fruits, vegetables, and whole grains.</li>
+                    <li>Ensure you get 7-9 hours of quality sleep per night.</li>
+                    <li>Wash your hands frequently to prevent infections.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fullName = localStorage.getItem('fullName') || 'User';
+            const userEmail = localStorage.getItem('email');
+            const welcomeTitle = document.getElementById('welcome-title');
+            welcomeTitle.textContent = `${fullName.split(' ')[0]}'s Health Dashboard`;
+
+            // --- Populate Medication Reminders (Mock Data) ---
+            const medicationList = document.getElementById('medicationList');
+            const mockMedications = [
+                { name: 'Multivitamin', time: '8:00 AM' },
+                { name: 'Paracetamol (if needed)', time: '12:00 PM' },
+                { name: 'Allergy Medication', time: '9:00 PM' }
+            ];
+            if (mockMedications.length > 0) {
+                mockMedications.forEach((med, index) => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <input type="checkbox" id="med-${index}">
+                        <label for="med-${index}"><strong>${med.name}</strong> - ${med.time}</label>
+                    `;
+                    medicationList.appendChild(li);
+                });
+            } else {
+                medicationList.innerHTML = '<li>No medications scheduled for today.</li>';
+            }
+
+            // --- Populate Recent History ---
+            const historyList = document.getElementById('historyList');
+            const allRecords = JSON.parse(localStorage.getItem('medicalRecords')) || [];
+            const userRecords = allRecords.filter(record => record.patientName === fullName);
+            
+            if (userRecords.length > 0) {
+                userRecords.slice(0, 3).forEach(record => { // Show latest 3
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <div class="history-item">
+                            <span>${record.diagnosis}</span>
+                            <span class="date">${record.recordDate}</span>
+                        </div>
+                    `;
+                    historyList.appendChild(li);
+                });
+            } else {
+                historyList.innerHTML = '<li>No recent history found.</li>';
+            }
+
+            // --- Populate Vaccination Schedule (Mock Data) ---
+            const vaccinationTableBody = document.querySelector('#vaccinationTable tbody');
+            const mockVaccinations = [
+                { name: 'Tetanus Booster', date: '2023-10-15', status: 'Completed' },
+                { name: 'Flu Shot', date: '2024-09-01', status: 'Due' },
+                { name: 'Typhoid Vaccine', date: '2022-05-20', status: 'Completed' }
+            ];
+            if (mockVaccinations.length > 0) {
+                mockVaccinations.forEach(vaccine => {
+                    const row = vaccinationTableBody.insertRow();
+                    row.innerHTML = `
+                        <td>${vaccine.name}</td>
+                        <td>${vaccine.date}</td>
+                        <td><span class="status-${vaccine.status.toLowerCase()}">${vaccine.status}</span></td>
+                    `;
+                });
+            } else {
+                const row = vaccinationTableBody.insertRow();
+                row.innerHTML = '<td colspan="3">No vaccination records.</td>';
+            }
+        });
+    </script>
+</body>
+</html>

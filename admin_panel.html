@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+</head>
+<body>
+    <h1>Admin Panel</h1>
+    <button onclick="window.location.href='user_list.html'">View Saved Users</button>
+    <h2>Registered Users</h2>
+    <table id="userTable">
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- User data will be populated here -->
+        </tbody>
+    </table>
+
+    <script>
+        function displayUsers() {
+        document.addEventListener('DOMContentLoaded', function() {
+            const userTableBody = document.querySelector('#userTable tbody');
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+
+            if (users.length > 0) {
+                users.forEach(user => {
+                    const row = userTableBody.insertRow();
+                    row.innerHTML = `
+                        <td>${user.fullName}</td>
+                        <td>${user.email}</td>
+                        <td>${user.role}</td>
+                    `;
+                });
+            } else {
+                const row = userTableBody.insertRow();
+                row.innerHTML = '<td colspan="3">No users registered.</td>';
+            }
+        });
+    }
+    displayUsers()
+
+    window.addEventListener('usersUpdated', function() {
+        displayUsers();
+    });
+    </script>
+
+</body>
+</html>

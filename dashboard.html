@@ -1,0 +1,1350 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> MINISTRY OF HEALTH AND SOCIAL SERVICES - MESMTF</title>
+    <link rel="stylesheet" href="modal.css"> <!-- Add modal stylesheet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* --- Color Variables for Theming --- */
+        :root {
+            --body-bg: #fff;
+            --features-bg: rgba(242, 249, 245, 0.95);
+            --card-bg: #fff;
+            --text-color: #333;
+            --text-muted-color: #666;
+            --heading-color: #009A44;
+            --header-bg: linear-gradient(135deg, #009A44, #00642E);
+            --footer-bg: #00642E;
+            --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            --notification-menu-bg: #fff;
+            --notification-item-hover: #f8f9fa;
+        }
+        
+        body {
+            background-image: url('https://media.istockphoto.com/id/1091130498/photo/pulse-trace-and-stethoscope.webp?a=1&b=1&s=612x612&w=0&k=20&c=4ZlkTU5YFeytqlRNICA9MlwKwgiZ5UECxvFEEvOMod0=');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding-top: 90px; /* Add padding to push content below fixed header */
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: var(--body-bg); /* Fallback for when image doesn't load */
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #009A44, #00642E);
+            color: white;
+            padding: 20px 0;
+            position: fixed; /* Make header sticky */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Dark Mode Toggle Switch --- */
+        .dark-mode-toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255,255,255,0.3);
+            transition: .4s;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+        }
+        input:checked + .slider {
+            background-color: #2ecc71;
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        .slider.round {
+            border-radius: 34px;
+        }
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        /* --- Dark Mode Styles --- */
+        body.dark-mode {
+            --body-bg: #1a1a1a;
+            --features-bg: #121212;
+            --card-bg: #2c2c2c;
+            --text-color: #e0e0e0;
+            --text-muted-color: #aaa;
+            --heading-color: #2ecc71;
+            --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            --notification-menu-bg: #333;
+            --notification-item-hover: #444;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 50px; /* Adjust the height as needed */
+            margin-right: 15px;
+            border-radius: 50%; /* Make the logo round */
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            margin-right: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 25px;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+        
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        nav ul li a i {
+            margin-right: 6px;
+            font-size: 1.1rem;
+        }
+
+        nav ul li a.logout-btn {
+            background-color: #ff6b6b;
+            font-weight: 600;
+        }
+        
+        nav ul li a.logout-btn:hover {
+            background-color: #ff5252;
+        }
+        
+        .notification-icon {
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background-color: #ff4d4d;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #009A44;
+            transform: scale(1);
+            transition: transform 0.2s ease-out;
+        }
+
+        #welcome-message {
+            color: #e0e0e0; /* A slightly off-white to differentiate */
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-search {
+            position: relative;
+        }
+
+        .header-search #headerSearchInput {
+            width: 0;
+            padding: 8px 0;
+            border: none;
+            border-bottom: 2px solid white;
+            background: transparent;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.4s ease;
+            opacity: 0;
+        }
+
+        .header-search #headerSearchInput::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .header-search.active #headerSearchInput {
+            width: 200px;
+            padding: 8px 10px;
+            opacity: 1;
+        }
+
+        /* --- Notification Dropdown --- */
+        .notification-menu {
+            position: absolute;
+            top: 120%; /* Position below the header */
+            right: 0;
+            width: 320px;
+            background-color: var(--notification-menu-bg);
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            z-index: 1001;
+            display: none; /* Hidden by default */
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        body.dark-mode .notification-menu {
+            color: var(--text-color);
+        }
+
+        .notification-menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .notification-header, .notification-footer {
+            padding: 12px 15px;
+            font-weight: 600;
+        }
+
+        .notification-header {
+            border-bottom: 1px solid #eee;
+        }
+
+        .notification-footer {
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+
+        .notification-footer a {
+            color: var(--heading-color);
+            font-weight: 600;
+        }
+
+        #notification-list {
+            list-style: none;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f5f5f5;
+            transition: background-color 0.2s ease;
+        }
+
+        .notification-item:hover {
+            background-color: var(--notification-item-hover);
+        }
+
+        .notification-item i {
+            margin-right: 15px;
+            color: var(--heading-color);
+            width: 20px;
+            text-align: center;
+        }
+
+        .header-search #clearSearchBtn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: white;
+            cursor: pointer;
+            display: none; /* Hidden by default */
+        }
+        
+
+
+        .global-search-form {
+            display: flex;
+            position: relative;
+            max-width: 600px;
+            margin: 40px auto 0;
+            background-color: #fff;
+            border-radius: 50px;
+            padding: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        #clearSearchBtn {
+            position: absolute;
+            right: 80px; /* Position it before the search button */
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #999;
+            cursor: pointer;
+            display: none; /* Hidden by default */
+        }
+        #clearSearchBtn:hover {
+            color: #333;
+        }
+
+        .global-search-form input {
+            flex-grow: 1;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            outline: none;
+            background: transparent;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0, 154, 68, 0.8), rgba(0, 100, 46, 0.8)), url('https://media.istockphoto.com/id/1172543405/photo/namibia-flag.jpg?s=1024x1024&w=is&k=20&c=OECgCvmiAE1uzymELkdz3fTE-4ySUir5He16qjB8vEc=');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero .btn {
+            box-shadow: none;
+            padding: 10px 25px;
+            margin-right: -3px; /* Align with the edge */
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #ff6b6b;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #ff5252;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .features {
+            padding: 80px 0;
+            background-color: var(--features-bg);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            color: #009A44;
+        }
+        
+        .section-title h2 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;            
+        }
+        
+        .section-title p {
+            color: var(--text-muted-color);
+            max-width: 700px;            
+            margin: 0 auto;
+        }
+        
+        .feature-grid {
+            display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        @keyframes card-load-animation {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-grid a {
+            animation: card-load-animation 0.5s ease-out forwards;
+            opacity: 0; /* Start hidden */
+        }
+
+        /* Stagger the animation for each card */
+        .feature-grid a:nth-child(1) { animation-delay: 0.1s; }
+        .feature-grid a:nth-child(2) { animation-delay: 0.2s; }
+        .feature-grid a:nth-child(3) { animation-delay: 0.3s; }
+        .feature-grid a:nth-child(4) { animation-delay: 0.4s; }
+        .feature-grid a:nth-child(5) { animation-delay: 0.5s; }
+        .feature-grid a:nth-child(6) { animation-delay: 0.6s; }
+        .feature-grid a:nth-child(7) { animation-delay: 0.7s; }
+        .feature-grid a:nth-child(8) { animation-delay: 0.8s; }
+        .feature-grid a:nth-child(9) { animation-delay: 0.9s; }
+        .feature-grid a:nth-child(10) { animation-delay: 1.0s; }
+        .feature-grid a:nth-child(11) { animation-delay: 1.1s; }
+        
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .feature-card.locked {
+            opacity: 0.6;
+        }
+
+        .lock-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            color: var(--text-color);
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(2px);
+            padding: 8px 10px;
+            border-radius: 50%;
+            z-index: 5;
+        }
+
+        .feature-card.hidden {
+            opacity: 0.2;
+            transform: scale(0.95);
+        }
+
+        .no-results-message {
+            display: none; /* Hidden by default */
+            text-align: center;
+            padding: 40px 20px;            
+            background-color: #fff;
+            border-radius: 10px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .no-results-message h3 {
+            color: #dc3545;
+            margin-bottom: 10px;
+        }
+
+        .feature-card img {
+            width: 100%;
+            height: 150px; /* Set a fixed height for all images */
+            object-fit: cover; /* Maintain aspect ratio and cover the area */
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 0 30px rgba(40, 220, 120, 0.6);
+        }
+        
+        .feature-card i {
+            font-size: 2.5rem;
+            color: #1af107;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover i {
+            text-shadow: 0 0 15px rgba(5, 240, 36, 0.6);
+        }
+
+        .feature-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+        
+        .diagnosis-section {
+            background-color: #f2f9f5;
+            padding: 80px 0;
+        }
+        
+        .diagnosis-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            align-items: center;
+        }
+        
+        .diagnosis-form {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        .symptoms-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .symptom-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .symptom-item input {
+            margin-right: 8px;
+        }
+        
+        .results {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-card {
+            background-color: #f8f9fa;
+            border-left: 4px solid #009A44;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .result-card h3 {
+            color: #009A44;
+            margin-bottom: 10px;
+        }
+        
+        .blog-section {
+            padding: 80px 0;
+            background-color: var(--features-bg); /* semi-transparent bg */
+        }
+
+        .blog-grid {
+            display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .blog-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 0 25px rgba(40, 220, 120, 0.5);
+        }
+
+        .blog-card img {
+            width: 100%;
+    height: 150px;
+            object-fit: cover;
+        }
+
+        .blog-card-content {
+    padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .blog-category {
+            display: inline-block;
+            background-color: #e6f5ec;            
+            color: #009A44;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            align-self: flex-start;
+        }
+
+        .blog-card-content h3 {
+    font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        .blog-card-content p {
+            flex-grow: 1;
+            margin-bottom: 20px;
+            color: var(--text-muted-color);
+        }
+
+        .btn-read-more {
+            color: var(--heading-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-read-more:hover {
+            color: #ff6b6b;
+        }
+
+        .btn-read-more i {
+            margin-left: 5px;
+            transition: transform 0.3s ease;
+        }
+        
+        .btn-read-more:hover i {
+            transform: translateX(5px);
+        }
+
+        .footer-logo {
+            height: 50px;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            background-color: #00642E;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        footer a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #ff6b6b;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+        
+        .footer-section p {
+            margin-bottom: 10px;
+        }
+        
+        .footer-section .social-icons {
+            margin-top: 15px;
+        }
+
+        .footer-section .social-icons a {
+            font-size: 1.4rem;
+            margin-right: 15px;
+            display: inline-block;
+        }
+
+        .copyright {
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 20px;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0 10px;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            background-color: #1714ee;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            padding: 8px 0;
+            z-index: 1;
+            display: none;
+        }
+          .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-laptop-medical"></i>
+                <img src="https://th.bing.com/th/id/OIP.rvsVTBcx442mamhkARD2QAAAAA?w=164&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="Logo">
+                <h1>MESMTF</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li id="welcome-message"></li>
+                    <li class="dark-mode-toggle-container">
+                        <i class="fas fa-moon"></i>
+                        <label class="switch">
+                            <input type="checkbox" id="darkModeToggle">
+                            <span class="slider round"></span>
+                        </label>
+                        <i class="fas fa-sun"></i>
+                    </li>
+                    <li class="notification-icon dropdown" id="notification-dropdown-container">
+                        <a href="#" title="Notifications" id="notification-toggle">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge" style="display: none;">0</span>
+                        </a>
+                        <div class="notification-menu" id="notification-menu">
+                            <div class="notification-header">Notifications</div>
+                            <ul id="notification-list">
+                                <li class="notification-item">No new notifications</li>
+                            </ul>
+                            <div class="notification-footer"><a href="#">View All</a></div>
+                        </div>
+                    </li>
+                    <li><a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a></li>
+                    <li class="header-search">
+                        <a href="#" id="search-icon-toggle"><i class="fas fa-search"></i></a>
+                        <button id="clearSearchBtn" title="Clear search">&times;</button>
+                        <input type="text" id="headerSearchInput" placeholder="Search...">
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle"><i class="fas fa-globe"></i> Translate</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" data-lang="en">English</a></li>
+                            <li><a href="#" data-lang="af">Afrikaans</a></li>
+                            <li><a href="#" data-lang="de">German</a></li>
+                            <li><a href="#" data-lang="pt">Portuguese</a></li>
+                            <!-- Note: Oshiwambo, Otjiherero, RuKwangali are not directly supported by Google Translate's free widget. -->
+                            <!-- You can add any other supported language codes here. -->
+                        </ul>
+                    </li>
+
+                    <li><a href="login.html" id="logout-button" class="logout-btn">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>MESMTF e-Health Services</h2>
+                <p>Our expert system provides end-to-end solutions for malaria and typhoid fever management</p>
+            </div>
+            <div class="feature-grid">
+                <a href="medical_records.html" style="text-decoration: none; color: inherit;" data-roles="patient,doctor,nurse" data-keywords="medical records,patient history,lab results,treatment plans">
+                    <div class="feature-card">
+                        <img src="https://plus.unsplash.com/premium_photo-1726769176212-1ab1fd60f42a?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8TWVkaWNhbCUyMFJlY29yZHN8ZW58MHx8MHx8fDA%3D" alt="Clipboard with a medical form">
+                        <div class="feature-card-content">
+                            <h3>Medical Records</h3>
+                            <p>Secure digital storage of patient history, lab results, and treatment plans</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="appointments.html" style="text-decoration: none; color: inherit;" data-roles="patient,doctor,nurse,receptionist" data-keywords="appointment,doctor,booking,consultation,dr. smith,dr. jones">
+                    <div class="feature-card">
+                        <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=60" alt="Doctor consulting with a patient">
+                        <div class="feature-card-content">
+                            <h3>Appointment with the Doctor</h3>
+                            <p>Easy online booking system for consultations with healthcare professionals</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="diagnosis.html" style="text-decoration: none; color: inherit;" data-roles="patient,doctor,nurse" data-keywords="diagnosis,symptoms,ai,malaria,typhoid,tuberculosis,diabetes,hiv">
+                    <div class="feature-card">
+                        <img src="https://images.unsplash.com/photo-1511174511562-5f7f18b874f8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fERpYWdub3Npc3xlbnwwfHwwfHx8MA%3D%3D" alt="Doctor listening with a stethoscope">
+                        <div class="feature-card-content">
+                            <h3>Diagnosis</h3>
+                            <p>diagnostic system for malaria and typhoid fever</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="ai_doctor.html" style="text-decoration: none; color: inherit;" data-roles="all" data-keywords="ai doctor,advice,chat,virtual assistant">
+                    <div class="feature-card">
+                        <img src="https://media.istockphoto.com/id/2198146030/photo/medical-ai-assistant-innovative-healthcare-chatbot-in-doctors-hand-digital-transformation-in.webp?a=1&b=1&s=612x612&w=0&k=20&c=mWBlzYG-VdAnDILmd-UnE6pV1W9v10OVQvcxLnUOxKA=" alt="Abstract illustration of an AI robot">
+                        <div class="feature-card-content">
+                            <h3>AI Doctor</h3>
+                            <p>Get instant health advice from our AI-powered virtual doctor, available 24/7.</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="treatment.html" style="text-decoration: none; color: inherit;" data-roles="doctor,nurse,pharmacist" data-keywords="treatment,guidelines,drugs,medication,artemether,ciprofloxacin,metformin">
+                    <div class="feature-card">
+                        <img src="https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8VHJlYXRtZW50fGVufDB8fDB8fHww" alt="Assortment of medical pills and capsules">
+                        <div class="feature-card-content">
+                            <h3>Treatment</h3>
+                            <p>Personalized treatment recommendations based on diagnosis</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="pharmacy.html" style="text-decoration: none; color: inherit;" data-roles="pharmacist,admin" data-keywords="pharmacy,prescriptions,inventory,drugs,medication,pills,stock">
+                    <div class="feature-card">
+                        <img src="https://plus.unsplash.com/premium_photo-1661770294094-06167872e079?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8UGhhcm1hY3l8ZW58MHx8MHx8fDA%3D" alt="Pharmacist working behind the counter">
+                        <div class="feature-card-content">
+                            <h3>Pharmacy</h3>
+                            <p>Electronic prescriptions and medication management</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="drug_administration.html" style="text-decoration: none; color: inherit;" data-roles="nurse,pharmacist" data-keywords="drug administration,schedule,dosage,pills,administer">
+                    <div class="feature-card">
+                        <img src="https://images.unsplash.com/photo-1631562501297-33f011a2933b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8RHJ1ZyUyMEFkbWluaXN0cmF0aW9ufGVufDB8fDB8fHww" alt="Person taking a pill with a glass of water">
+                        <div class="feature-card-content">
+                            <h3>Drug Administration</h3>
+                            <p>Track and manage medication schedules and dosages.</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="reporting.html" style="text-decoration: none; color: inherit;" data-roles="admin" data-keywords="reporting,analytics,stats,statistics,charts,reports">
+                    <div class="feature-card">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=60" alt="Computer screen showing data charts and graphs">
+                        <div class="feature-card-content">
+                            <h3>Reporting</h3>
+                            <p>Comprehensive reports for healthcare authorities and patients</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="admin.html" style="text-decoration: none; color: inherit;" data-roles="admin" data-keywords="admin,panel,users,roles,settings">
+                    <div class="feature-card">
+                        <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGFkbWluJTIwcGFuZWx8ZW58MHx8MHx8fDA%3D" alt="Admin panel with gears and charts">
+                        <div class="feature-card-content">
+                            <h3>Admin Panel</h3>
+                            <p>Manage users, roles, and system settings.</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="outbreak_prediction.html" style="text-decoration: none; color: inherit;" data-roles="all" data-keywords="outbreak,prediction,heatmap,epidemiology,disease spread,analytics">
+                    <div class="feature-card">
+                        <img src="https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGVhdGhtYXAlMjBkaXNlYXNlfGVufDB8fDB8fHww" alt="Heatmap showing disease outbreak">
+                        <div class="feature-card-content">
+                            <h3>Outbreak Prediction</h3>
+                            <p>Use predictive analytics and heatmaps to monitor and forecast potential disease outbreaks.</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="personal_health_dashboard.html" style="text-decoration: none; color: inherit;" data-roles="patient" data-keywords="personal health, my health, tracker, history, medication, vaccination, lifestyle">
+                    <div class="feature-card">
+                        <img src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=500&auto=format&fit=crop&q=60" alt="Personal Health Dashboard">
+                        <div class="feature-card-content">
+                            <h3>Personal Health Dashboard</h3>
+                            <p>Track your health history, medication reminders, and lifestyle tips all in one place.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div id="no-results-message" class="no-results-message">
+                <h3>No Results Found</h3>
+                <p>We couldn't find any services matching your search. Please try a different term.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="blog-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>From Our Blog</h2>
+                <p>Stay informed with the latest news, stories, and health tips from our experts</p>
+            </div>
+            <div class="blog-grid">
+                <!-- Blog Card 1 -->
+                <div class="blog-card">
+                    <img src="https://media.istockphoto.com/id/2162448092/photo/man-sprays-against-mosquitoes.webp?a=1&b=1&s=612x612&w=0&k=20&c=DZ92Mb2uVX_FYxbRqKZJZLCG_oe56IVJA2JR8oRfyLQ=" alt="Doctor with tablet">
+                    <div class="blog-card-content">
+                        <span class="blog-category">Prevention</span>
+                        <h3>Understanding Malaria: Symptoms and Prevention</h3>
+                        <p>Learn how to recognize the symptoms early and take preventive measures to protect yourself and your family.</p><a href="https://www.cdc.gov/malaria/about/index.html" class="btn-read-more" target="_blank">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- Health Education Hub Card -->
+                <div class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=500&auto=format&fit=crop&q=60" alt="Health education resources on a laptop">
+                    <div class="blog-card-content">
+                        <span class="blog-category">Initiative Hub</span>
+                        <h3>Health Education Hub</h3>
+                        <p>Access educational materials, workshops, and resources about Malaria and Typhoid prevention and care.</p>
+                        <a href="education_hub.html" class="btn-read-more">Learn More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- End Health Education Hub Card -->
+                <div class="blog-card">
+                    <img src="https://www.who.int/ResourcePackages/WHO/assets/dist/images/logos/en/h-logo-blue.svg" alt="World Health Organization">
+                    <div class="blog-card-content">
+                        <span class="blog-category">Global Health</span>
+                        <h3>World Health Organization</h3>
+                        <p>Stay up-to-date with the latest global health initiatives and information from the WHO.</p>
+                        <a href="https://www.who.int/" class="btn-read-more">Visit Website <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- Blog Card 2 -->
+                <div class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1594980681623-3f9ab030f1d7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fERpZXRhcnklMjBUaXBzJTIwZm9yJTIwYSUyMFNwZWVkeSUyMFJlY292ZXJ5JTIwZnJvbSUyMFR5cGhvaWR8ZW58MHx8MHx8fDA%3D" alt="Healthy food">
+                    <div class="blog-card-content">
+                        <span class="blog-category">Nutrition</span>
+                        <h3>Dietary Tips for a Speedy Recovery from Typhoid</h3>
+                        <p>Proper nutrition is crucial when recovering from typhoid fever. Discover the best foods to eat and what to avoid.</p>
+                        <a href="https://www.nanavatimaxhospital.org/blogs/typhoid-diet-chart" class="btn-read-more" target="_blank">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- Blog Card 3 -->
+                <div class="blog-card">
+                    <img src="https://plus.unsplash.com/premium_photo-1729286323722-8ec789ebdfe1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fFBhdGllbnQlMjBTdG9yeXxlbnwwfHwwfHx8MA%3D%3D" alt="Person washing hands">
+                    <div class="blog-card-content">
+                        <span class="blog-category">Community</span>
+                        <h3>Patient Story: My Battle with Typhoid Fever</h3>
+                        <p>Read a personal account from a community member about their journey with typhoid fever, from diagnosis to recovery.</p>
+                        <a href="https://www.coalitionagainsttyphoid.org/meetdrshrestha/" class="btn-read-more" target="_blank">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- Blog Card 4 -->
+                <div class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1569949381669-ecf31ae8e613?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80" alt="Traveler with a map">
+                    <div class="blog-card-content">
+                        <span class="blog-category">Health Advisory</span>
+                        <h3>Travel Advisory: Staying Safe in High-Risk Zones</h3>
+                        <p>Planning a trip? Get the latest health advisories and essential tips for traveling to areas where malaria and typhoid are prevalent.</p>
+                        <a href="https://www.healthklinix.co.uk/post/don-t-travel-without-knowing-get-essential-travel-health-advice-now" class="btn-read-more" target="_blank">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- Blog Card 5 -->
+                <div class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80" alt="Community discussion">
+                    <div class="blog-card-content">
+                        <span class="blog-category">Community</span>
+                        <h3>Join the Conversation: Our New Community Forum</h3>
+                        <p>Connect with others, share your story, and find support in our new community forum. A place to learn and grow together.</p>
+                        <a href="https://bettermode.com/blog/community-forum" class="btn-read-more" target="_blank">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <img src="https://th.bing.com/th/id/OIP.Cwahpu8LIoJZ-MwUbgsmewHaEK?w=208&h=150&c=6&o=7&pid=1.7&rm=3" alt="Ministry of Health and Social Services Logo" class="footer-logo">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About MESMTF</h3>
+                    <p>A platform for the diagnosis and management of malaria and typhoid fever.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> University of Namibia
+        Private Bag 13301
+        Windhoek, Namibia</p>
+                    <p><i class="fas fa-phone"></i> +264 81 6129 199</p>
+                    <p><i class="fas fa-envelope"></i> codeamateurs2025@gmail.com</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="#home">Home</a></p>
+                    <p><a href="#diagnosis">Diagnosis</a></p>
+                    <p><a href="#appointments">Appointments</a></p>
+                    <p><a href="#pharmacy">Pharmacy</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/universityofnamibia" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://twitter.com/unaminfor" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.linkedin.com/school/university-of-namibia/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.instagram.com/universityofnamibia/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://chat.whatsapp.com/IVRjqWy94q9DHO78rxrksF" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 MESMTF. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Google Translate Element -->
+    <div id="google_translate_element" style="display:none;"></div>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+        }
+    </script>
+    <script src="modal.js"></script> <!-- Add modal script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const welcomeMessage = document.getElementById('welcome-message');
+            const fullName = localStorage.getItem('fullName');
+            const email = localStorage.getItem('email');
+
+            if (fullName) {
+                // Display the first name if available
+                const firstName = fullName.split(' ')[0];
+                welcomeMessage.innerHTML = `<i class="fas fa-user" style="margin-right: 8px;"></i> Welcome, ${firstName}!`;
+            } else if (email) {
+                // Fallback to email if full name is not available (e.g., after login)
+                welcomeMessage.innerHTML = `<i class="fas fa-user" style="margin-right: 8px;"></i> Welcome, ${email}!`;
+            } else {
+                welcomeMessage.innerHTML = `<i class="fas fa-user" style="margin-right: 8px;"></i> Welcome!`;
+            }
+
+            // --- Role-Based Access Control for Feature Cards ---
+            const userRole = localStorage.getItem('userRole');
+            const featureGrid = document.querySelector('.feature-grid');
+
+            if (featureGrid && userRole) {
+                const cards = featureGrid.querySelectorAll('a');
+                cards.forEach(cardLink => {
+                    const requiredRoles = cardLink.dataset.roles;
+                    if (requiredRoles) {
+                        const rolesArray = requiredRoles.split(',');
+                        const hasAccess = rolesArray.includes('all') || rolesArray.includes(userRole);
+
+                        if (!hasAccess) {
+                            const card = cardLink.querySelector('.feature-card');
+                            card.classList.add('locked');
+                            cardLink.href = '#'; // Prevent navigation
+                            cardLink.onclick = (e) => {
+                                e.preventDefault();
+                                showModal('Access Denied', 'You do not have the required role to view this page.');
+                            };
+
+                            // Add the lock icon
+                            const lockIcon = document.createElement('i');
+                            lockIcon.className = 'fas fa-lock lock-icon';
+                            card.appendChild(lockIcon);
+                        }
+                    }
+                });
+            }
+
+            // --- Dark Mode Functionality ---
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const currentTheme = localStorage.getItem('theme');
+
+            if (currentTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.checked = true;
+            }
+
+            darkModeToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    document.body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+
+            // Adjust section title color for dark mode
+            if (document.body.classList.contains('dark-mode')) {
+                document.querySelectorAll('.section-title h2').forEach(h2 => h2.style.color = 'var(--heading-color)');
+            }
+
+            // --- Logout Functionality ---
+            const logoutButton = document.getElementById('logout-button');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent the default link behavior
+
+                    // Clear user-specific session data from localStorage
+                    localStorage.removeItem('fullName');
+                    localStorage.removeItem('email');
+                    localStorage.removeItem('userRole');
+                    localStorage.removeItem('profilePicture');
+
+                    window.location.href = 'login.html'; // Redirect to the login page
+                });
+            }
+
+            // --- Search Functionality ---
+            const searchInput = document.getElementById('headerSearchInput');
+            const searchIconToggle = document.getElementById('search-icon-toggle');
+            const headerSearchContainer = document.querySelector('.header-search');
+            const clearSearchBtn = document.getElementById('clearSearchBtn');
+            const featureCards = document.querySelectorAll('.feature-grid a');
+            const noResultsMessage = document.getElementById('no-results-message');
+
+            // Toggle search bar visibility
+            if (searchIconToggle) searchIconToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                headerSearchContainer.classList.toggle('active');
+                if (headerSearchContainer.classList.contains('active')) {
+                    searchInput.focus();
+                }
+            });
+
+            // Clear search input
+            if (clearSearchBtn) clearSearchBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                handleSearch(); // Re-run search to show all cards
+                searchInput.focus();
+            });
+            
+            function handleSearch() {
+                const query = searchInput.value.toLowerCase().trim();
+                let visibleCount = 0;
+
+                clearSearchBtn.style.display = query ? 'block' : 'none';
+
+                featureCards.forEach(cardLink => {
+                    const card = cardLink.querySelector('.feature-card');
+                    const title = card.querySelector('h3').textContent.toLowerCase();
+                    const description = card.querySelector('p').textContent.toLowerCase();
+                    const keywords = cardLink.dataset.keywords ? cardLink.dataset.keywords.toLowerCase() : '';
+
+                    const isVisible = title.includes(query) || description.includes(query) || keywords.includes(query);
+
+                    if (isVisible) {
+                        cardLink.style.display = '';
+                        visibleCount++;
+                    } else {
+                        cardLink.style.display = 'none';
+                    }
+                });
+
+                // Show or hide the 'no results' message
+                if (visibleCount === 0 && query) {
+                    noResultsMessage.style.display = 'block';
+                } else {
+                    noResultsMessage.style.display = 'none';
+                }
+            }
+
+            if (searchInput) searchInput.addEventListener('input', handleSearch);
+
+            // Handle search query from URL (e.g., from another page's search bar)
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryFromUrl = urlParams.get('q');
+            if (queryFromUrl) {
+                searchInput.value = queryFromUrl;
+                handleSearch();
+            }
+
+            // --- Translation Logic ---
+            const translateDropdown = document.querySelector('.dropdown-menu');
+            if (translateDropdown) {
+                translateDropdown.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const target = event.target;
+                    if (target.tagName === 'A') {
+                        const langCode = target.dataset.lang;
+                        if (langCode) {
+                            const translateElement = document.querySelector('#google_translate_element select');
+                            if (translateElement) {
+                                translateElement.value = langCode;
+                                translateElement.dispatchEvent(new Event('change'));
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        // --- Notification Logic ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const notificationToggle = document.getElementById('notification-toggle');
+            const notificationMenu = document.getElementById('notification-menu');
+            const notificationBadge = document.querySelector('.notification-badge');
+            const notificationList = document.getElementById('notification-list');
+
+            const userRole = localStorage.getItem('userRole');
+            const userFullName = localStorage.getItem('fullName');
+            let notifications = [];
+
+            // Generate notifications only for doctors
+            if (userRole === 'doctor' && userFullName) {
+                const doctorName = `Dr. ${userFullName}`;
+                const allAppointments = JSON.parse(localStorage.getItem('appointments')) || [];
+                const today = new Date();
+                today.setHours(0, 0, 0, 0); // Set to start of day for comparison
+
+                const doctorAppointments = allAppointments.filter(app => {
+                    const appointmentDate = new Date(app.date + 'T00:00:00'); // Avoid timezone issues
+                    return app.doctor === doctorName && appointmentDate >= today;
+                });
+
+                // Sort by date, soonest first
+                doctorAppointments.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                notifications = doctorAppointments.map(app => ({
+                    type: 'appointment',
+                    text: `New appointment with ${app.patientName} on ${app.date}`,
+                    icon: 'fa-calendar-check',
+                    link: 'appointments.html'
+                }));
+            }
+
+            if (notifications.length > 0) {
+                // Update badge count
+                notificationBadge.textContent = notifications.length;
+                notificationBadge.style.display = 'flex';
+                notificationBadge.style.transform = 'scale(1.1)'; // Small pop effect
+
+                // Populate dropdown
+                notificationList.innerHTML = ''; // Clear the "no notifications" message
+                notifications.forEach(task => {
+                    const item = document.createElement('li');
+                    item.innerHTML = `<a href="${task.link}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;"><div class="notification-item"><i class="fas ${task.icon}"></i><span>${task.text}</span></div></a>`;
+                    notificationList.appendChild(item);
+                });
+            } else {
+                // Keep the default "No new notifications" message
+                notificationBadge.style.display = 'none';
+            }
+
+            // Toggle dropdown visibility and handle closing
+            notificationToggle.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                notificationMenu.classList.toggle('show');
+            });
+
+            window.addEventListener('click', function(event) {
+                if (notificationMenu.classList.contains('show') && !document.getElementById('notification-dropdown-container').contains(event.target)) {
+                    notificationMenu.classList.remove('show');
+                }
+            });
+
+            notificationMenu.addEventListener('click', event => event.stopPropagation());
+        });
+    </script>
+</body>
+</html>

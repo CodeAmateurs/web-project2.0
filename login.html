@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="auth.css">
+    <link rel="stylesheet" href="modal.css"> <!-- Add modal stylesheet -->
+    <title>Login - MESMTF</title>
+</head>
+<body>
+    <div class="auth-container login-container">
+        <div class="auth-header">
+            <i class="fas fa-laptop-medical"></i>
+            <h1>MESMTF</h1>
+        </div>
+        <h2>Welcome Back!</h2>
+        <p>Please login to your account.</p>
+        <form id="loginForm" action="https://formcarry.com/s/O689Q9Vw8P7" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label>I am a:</label>
+                <div class="role-selector">
+                    <div class="role-option" data-role="patient"><img src="https://images.unsplash.com/photo-1550831107-1553da8c8464?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cGF0aWVudHxlbnwwfHwwfHx8MA%3D%3D" alt="Patient"><span>Patient</span></div>
+                    <div class="role-option" data-role="doctor"><img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format=fit=crop&w=800&q=60" alt="Doctor"><span>Doctor</span></div>
+                    <div class="role-option" data-role="nurse"><img src="https://media.istockphoto.com/id/2166798806/photo/young-individual-in-scrubs-focused-on-laptop-work.webp?a=1&b=1&s=612x612&w=0&k=20&c=VpVIT-3_hxb8QFATj89apnNRhMbd0DhuqsKzC7Tkz7g=" alt="Nurse"><span>Nurse</span></div>
+                    <div class="role-option" data-role="pharmacist"><img src="https://plus.unsplash.com/premium_photo-1661770294094-06167872e079?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8UGhhcm1hY3l8ZW58MHx8MHx8fDA%3D" alt="Pharmacist"><span>Pharmacist</span></div>
+                    <div class="role-option" data-role="receptionist"><img src="https://images.unsplash.com/photo-1554774853-719586f82d77?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVjZXB0aW9uaXN0fGVufDB8fDB8fHww" alt="Receptionist"><span>Receptionist</span></div>
+                    <div class="role-option" data-role="admin"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=60" alt="Admin"><span>Admin</span></div>
+                </div>
+                <input type="hidden" id="userRole" name="userRole" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" name="password" required>
+                    <i class="fas fa-eye-slash toggle-password"></i>
+                </div>
+            </div>
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox" id="rememberMe">
+                    Remember Me
+                </label>
+                <a href="forgot_password.html">Forgot Password?</a>
+            </div>
+            <button type="submit" class="btn login-btn">Login</button>
+        </form>
+        <div class="extra-links">
+            <p>Don't have an account? <a href="registration.html">Register here</a></p>
+        </div>
+    </div>
+
+    <script src="modal.js"></script> <!-- Add modal script -->
+    <script>
+        const roleOptions = document.querySelectorAll('.role-option');
+        const userRoleInput = document.getElementById('userRole');
+
+        roleOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove 'selected' from all options
+                roleOptions.forEach(opt => opt.classList.remove('selected'));
+                // Add 'selected' to the clicked option
+                this.classList.add('selected');
+                // Set the value of the hidden input
+                userRoleInput.value = this.dataset.role;
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for remembered user
+            const rememberedEmail = localStorage.getItem('rememberedEmail');
+            if (rememberedEmail) {
+                document.getElementById('email').value = rememberedEmail;
+                document.getElementById('rememberMe').checked = true;
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const selectedRole = userRoleInput.value;
+            if (!selectedRole) {
+                showModal('Selection Required', 'Please select your role to continue.');
+                return;
+            }
+
+            // --- User Authentication Logic ---
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (user) {
+                // User found and password is correct. Now check role.
+                if (user.role !== selectedRole) {
+                    showModal('Incorrect Role', `The role '${selectedRole}' is incorrect for this user. Please select the correct role and try again.`);
+                    return;
+                }
+
+                // --- Login Successful: Set session and submit data ---
+                localStorage.setItem('fullName', user.fullName);
+                localStorage.setItem('email', user.email);
+                localStorage.setItem('userRole', user.role);
+
+                // Handle "Remember Me"
+                const rememberMeCheckbox = document.getElementById('rememberMe');
+                if (rememberMeCheckbox.checked) {
+                    localStorage.setItem('rememberedEmail', email);
+                } else {
+                    localStorage.removeItem('rememberedEmail');
+                }
+
+                // Submit form data to Formcarry in the background
+                const form = event.target;
+                const formData = new FormData(form);
+                fetch(form.action, {
+                    method: form.method,
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                // Redirect to the success page
+                window.location.href = 'login_success.html';
+            } else {
+                // User not found or password incorrect
+                showModal('Authentication Failed', 'Invalid email or password. Please try again.');
+            }
+        });
+
+        document.querySelectorAll('.toggle-password').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const passwordInput = this.previousElementSibling;
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                // Toggle the icon
+                if (type === 'password') {
+                    this.classList.replace('fa-eye', 'fa-eye-slash');
+                } else {
+                    this.classList.replace('fa-eye-slash', 'fa-eye');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

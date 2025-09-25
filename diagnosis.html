@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Diagnosis</title>
+    <link rel="stylesheet" href="modal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reusing styles for consistency */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-image: url('https://plus.unsplash.com/premium_photo-1661767897334-bbfbdfdc4d1a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWVkaWNhbHxlbnwwfHwwfHx8MA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #333;
+            padding-top: 90px; /* Add padding to push content below fixed header */
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #009A44, #00642E);
+            color: white;
+            padding: 20px 0;
+            position: fixed; /* Make header sticky */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 50px;
+            margin-right: 15px;
+            border-radius: 50%;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            margin-right: 15px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        nav ul li a i {
+            margin-right: 6px;
+            font-size: 1.1rem;
+        }
+
+        nav ul li a.logout-btn {
+            background-color: #ff6b6b;
+            font-weight: 600;
+        }
+
+        nav ul li a.logout-btn:hover {
+            background-color: #ff5252;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            background-color: #1714ee;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            padding: 8px 0;
+            z-index: 1;
+            display: none;
+        }
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .header-search {
+            position: relative;
+        }
+
+        .header-search #headerSearchInput {
+            width: 0;
+            padding: 8px 0;
+            border: none;
+            border-bottom: 2px solid white;
+            background: transparent;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.4s ease;
+            opacity: 0;
+        }
+
+        .header-search #headerSearchInput::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .header-search.active #headerSearchInput {
+            width: 200px;
+            padding: 8px 10px;
+            opacity: 1;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            background-color: #6c757d;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.5rem;
+        }
+
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .diagnosis-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        .diagnosis-form {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .symptoms-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .symptom-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .symptom-item input {
+            margin-right: 8px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #009A44;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: #00642E;
+        }
+
+        .results {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .result-card {
+            background-color: #f8f9fa;
+            border-left: 4px solid #009A44;
+            padding: 20px;
+            border-radius: 4px;
+            min-height: 200px;
+        }
+
+        .result-card h3 {
+            color: #009A44;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title h1 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: #009A44;
+        }
+
+        .section-title p {
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-laptop-medical"></i>
+                <img src="https://th.bing.com/th/id/OIP.rvsVTBcx442mamhkARD2QAAAAA?w=164&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="Logo">
+                <h1>MESMTF</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a></li>
+                    <li class="header-search">
+                        <a href="#" id="search-icon-toggle"><i class="fas fa-search"></i></a>
+                        <input type="text" id="headerSearchInput" placeholder="Search...">
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle"><i class="fas fa-globe"></i> Translate</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" data-lang="en">English</a></li>
+                            <li><a href="#" data-lang="af">Afrikaans</a></li>
+                            <li><a href="#" data-lang="de">German</a></li>
+                            <!-- Add other language codes as needed -->
+                        </ul>
+                    </li>
+                    <li><a href="login.html" class="logout-btn">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <a href="dashboard.html" class="back-btn" title="Back to Dashboard">&larr;</a>
+        <div class="section-title">
+            <h1>Diagnosis</h1>
+            <p>Enter patient information and symptoms to get a preliminary diagnosis for malaria and typhoid fever.</p>
+        </div>
+        <div class="diagnosis-container">
+            <div class="diagnosis-form">
+                <form id="diagnosisForm">
+                    <div class="form-group">
+                        <label for="diseaseSelect">Select Disease Profile</label>
+                        <select id="diseaseSelect" name="diseaseSelect">
+                            <option value="malaria_typhoid">Malaria & Typhoid Fever</option>
+                            <option value="tuberculosis">Tuberculosis (TB)</option>
+                            <option value="diabetes">Diabetes</option>
+                            <option value="hiv_aids">HIV/AIDS</option>
+                            <option value="mental_health">Mental Health (Depression)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="patientName">Patient Name</label>
+                        <input type="text" id="patientName" name="patientName" required placeholder="Enter patient's full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="patientAge">Patient Age</label>
+                        <input type="number" id="patientAge" name="patientAge" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bodyTemp">Body Temperature (°C)</label>
+                        <input type="number" step="0.1" id="bodyTemp" name="bodyTemp" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Select Symptoms:</label>
+                        <div class="symptoms-list">
+                            <!-- Symptoms will be dynamically populated here -->
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="customSymptoms">Other Symptoms (optional, separate with commas)</label>
+                        <textarea id="customSymptoms" name="customSymptoms" rows="3" placeholder="e.g., sore throat, cough, sweating..."></textarea>
+                    </div>
+                    <button type="submit" class="btn">Get Diagnosis</button>
+                </form>
+            </div>
+            <div class="results">
+                <h3>Diagnosis Result</h3>
+                <div id="diagnosisResult" class="result-card">
+                    <p>Results will be displayed here after submitting the form.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Google Translate Element -->
+    <div id="google_translate_element" style="display:none;"></div>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+        }
+    </script>
+    <script src="modal.js"></script>
+    <script>
+        const diseaseSelect = document.getElementById('diseaseSelect');
+        const symptomsListDiv = document.querySelector('.symptoms-list');
+        const diagnosisForm = document.getElementById('diagnosisForm');
+
+        const diseaseProfiles = {
+            malaria_typhoid: {
+                name: 'Malaria & Typhoid Fever',
+                symptoms: {
+                    fever: 'Fever', headache: 'Headache', chills: 'Chills', fatigue: 'Fatigue / Weakness', nausea: 'Nausea',
+                    vomiting: 'Vomiting', muscle_pain: 'Muscle Pain', stomach_pain: 'Stomach Pain', diarrhea: 'Diarrhea', rash: 'Rash',
+                    sore_throat: 'Sore Throat', cough: 'Cough', constipation: 'Constipation', chest_pain: 'Chest Pain',
+                    back_pain: 'Back Pain', sweating: 'Sweating', loss_of_appetite: 'Loss of Appetite'
+                },
+                customSymptomKeywords: {
+                    malaria: {}, // All common symptoms are now checkboxes
+                    typhoid: {}  // All common symptoms are now checkboxes
+                },
+                logic: function(patientData) {
+                    const scores = { VSs: 4, Ss: 3, Ws: 2, VWs: 1 };
+                    const diseaseSymptoms = {
+                        malaria: {
+                            vomiting: 'VSs', stomach_pain: 'VSs',
+                            headache: 'Ss', chills: 'Ss', fever: 'Ss',
+                            muscle_pain: 'Ws', fatigue: 'Ws', nausea: 'Ws',
+                            diarrhea: 'VWs', rash: 'VWs', sweating: 'VWs'
+                        },
+                        typhoid: {
+                            vomiting: 'VSs', stomach_pain: 'VSs', sore_throat: 'VSs',
+                            headache: 'Ss', cough: 'Ss', constipation: 'Ss', fever: 'Ss',
+                            chest_pain: 'Ws', back_pain: 'Ws', muscle_pain: 'Ws', fatigue: 'Ws', nausea: 'Ws',
+                            loss_of_appetite: 'VWs', diarrhea: 'VWs', rash: 'VWs'
+                        }
+                    };
+
+                    let malariaScore = 0, typhoidScore = 0;
+
+                    patientData.symptoms.forEach(symptom => {
+                        if (diseaseSymptoms.malaria[symptom]) malariaScore += scores[diseaseSymptoms.malaria[symptom]];
+                        if (diseaseSymptoms.typhoid[symptom]) typhoidScore += scores[diseaseSymptoms.typhoid[symptom]];
+                    });
+
+                    if (patientData.customSymptomsText) {
+                        for (const symptom in this.customSymptomKeywords.malaria) {
+                            if (patientData.customSymptomsText.includes(symptom)) malariaScore += scores[this.customSymptomKeywords.malaria[symptom]];
+                        }
+                        for (const symptom in this.customSymptomKeywords.typhoid) {
+                            if (patientData.customSymptomsText.includes(symptom)) typhoidScore += scores[this.customSymptomKeywords.typhoid[symptom]];
+                        }
+                    }
+
+                    if (patientData.temp > 39.0) {
+                        malariaScore += scores['Ss'];
+                        typhoidScore += scores['Ss'];
+                    }
+
+                    let diagnosis = "Undetermined", probability = 0, advice = "Symptoms are not clearly indicative of a specific condition. Please consult a doctor.", diagnosedDisease = null;
+                    const THRESHOLD = 7;
+
+                    if (malariaScore > typhoidScore && malariaScore >= THRESHOLD) {
+                        diagnosedDisease = 'malaria';
+                        diagnosis = "High Probability of Malaria";
+                        probability = Math.min(95, 50 + malariaScore * 2);
+                        advice = "Recommended treatment includes drug administration (e.g., Artemether-lumefantrine). ";
+                    } else if (typhoidScore > malariaScore && typhoidScore >= THRESHOLD) {
+                        diagnosedDisease = 'typhoid';
+                        diagnosis = "High Probability of Typhoid Fever";
+                        probability = Math.min(95, 50 + typhoidScore * 2);
+                        advice = "Recommended treatment includes drug administration (e.g., Ciprofloxacin or Azithromycin). ";
+                    } else if (malariaScore > 3 || typhoidScore > 3) {
+                        diagnosis = "Possible Febrile Illness";
+                        probability = 40 + Math.max(malariaScore, typhoidScore) * 2;
+                        advice = "Symptoms indicate a febrile illness but do not strongly point to Malaria or Typhoid. Drug administration may be required. It is important to consult a doctor for an accurate diagnosis and treatment plan.";
+                    } else if (patientData.symptoms.length > 0) {
+                        diagnosis = "Minor Symptoms Reported";
+                        probability = 20 + patientData.symptoms.length * 5;
+                        advice = "The reported symptoms are mild. Monitor your condition and consult a healthcare professional if symptoms worsen or do not improve.";
+                    }
+
+                    if (diagnosedDisease) {
+                        let hasVeryStrongSign = false;
+                        patientData.symptoms.forEach(symptom => {
+                            if (diseaseSymptoms[diagnosedDisease][symptom] === 'VSs') hasVeryStrongSign = true;
+                        });
+                        if (patientData.customSymptomsText && this.customSymptomKeywords[diagnosedDisease]) {
+                             for (const symptom in this.customSymptomKeywords[diagnosedDisease]) {
+                                if (patientData.customSymptomsText.includes(symptom) && this.customSymptomKeywords[diagnosedDisease][symptom] === 'VSs') hasVeryStrongSign = true;
+                            }
+                        }
+
+                        if (hasVeryStrongSign) advice += "Due to the presence of very strong signs, a chest X-ray is also recommended. ";
+                        advice += "Please consult a healthcare professional immediately for confirmation and prescription.";
+                        if (diagnosedDisease === 'typhoid') advice += " Ensure good hygiene and drink clean water.";
+                    }
+                    return { diagnosis, probability, advice };
+                }
+            },
+            tuberculosis: {
+                name: 'Tuberculosis (TB)',
+                symptoms: {
+                    persistent_cough: 'Persistent cough (3+ weeks)', coughing_blood: 'Coughing up blood', chest_pain: 'Chest pain',
+                    weight_loss: 'Unexplained weight loss', fatigue: 'Fatigue', fever: 'Fever', night_sweats: 'Night sweats',
+                    chills: 'Chills', loss_of_appetite: 'Loss of appetite'
+                },
+                logic: function(patientData) {
+                    let score = 0;
+                    if (patientData.symptoms.includes('persistent_cough')) score += 4;
+                    if (patientData.symptoms.includes('coughing_blood')) score += 5; // Very strong
+                    if (patientData.symptoms.includes('night_sweats')) score += 3;
+                    if (patientData.symptoms.includes('weight_loss')) score += 3;
+                    if (patientData.symptoms.includes('fever')) score += 2;
+                    if (patientData.symptoms.includes('fatigue')) score += 1;
+
+                    let diagnosis = "Low Probability of TB";
+                    let probability = Math.min(95, 20 + score * 5);
+                    let advice = "Symptoms do not strongly indicate TB. However, if symptoms persist, please see a doctor.";
+
+                    if (score >= 7) {
+                        diagnosis = "High Probability of Tuberculosis (TB)";
+                        advice = "Symptoms strongly suggest Tuberculosis. It is critical to see a doctor for a chest X-ray and sputum test. TB is treatable but requires a long course of specific antibiotics.";
+                    } else if (score >= 4) {
+                        diagnosis = "Possible Tuberculosis (TB)";
+                        advice = "Some symptoms are consistent with TB. A medical consultation is recommended for further evaluation.";
+                    }
+                    return { diagnosis, probability, advice };
+                }
+            },
+            diabetes: {
+                name: 'Diabetes',
+                symptoms: {
+                    frequent_urination: 'Frequent urination', increased_thirst: 'Increased thirst', increased_hunger: 'Increased hunger',
+                    fatigue: 'Fatigue', blurred_vision: 'Blurred vision', slow_healing: 'Slow-healing sores',
+                    frequent_infections: 'Frequent infections', weight_loss: 'Unexplained weight loss'
+                },
+                logic: function(patientData) {
+                    let score = 0;
+                    if (patientData.symptoms.includes('frequent_urination')) score += 3;
+                    if (patientData.symptoms.includes('increased_thirst')) score += 3;
+                    if (patientData.symptoms.includes('weight_loss')) score += 2;
+                    if (patientData.symptoms.includes('blurred_vision')) score += 2;
+                    if (patientData.symptoms.includes('fatigue')) score += 1;
+
+                    let diagnosis = "Low Probability of Diabetes";
+                    let probability = Math.min(95, 20 + score * 7);
+                    let advice = "Symptoms do not strongly indicate Diabetes. Maintain a healthy lifestyle.";
+
+                    if (score >= 6) {
+                        diagnosis = "High Probability of Diabetes";
+                        advice = "Symptoms are highly indicative of Diabetes. Please see a doctor for blood sugar tests (like A1C and fasting glucose tests). Management may involve lifestyle changes, diet, and medication.";
+                    } else if (score >= 3) {
+                        diagnosis = "Possible Diabetes";
+                        advice = "Some symptoms are consistent with Diabetes. It is recommended to monitor your blood sugar levels and consult a doctor.";
+                    }
+                    return { diagnosis, probability, advice };
+                }
+            },
+            hiv_aids: {
+                name: 'HIV/AIDS',
+                symptoms: {
+                    fever: 'Fever',
+                    chills: 'Chills',
+                    rash: 'Rash',
+                    night_sweats: 'Night sweats',
+                    muscle_aches: 'Muscle aches',
+                    sore_throat: 'Sore throat',
+                    fatigue: 'Fatigue',
+                    swollen_lymph_nodes: 'Swollen lymph nodes',
+                    rapid_weight_loss: 'Rapid weight loss',
+                    mouth_sores: 'Sores in mouth, anus, or genitals',
+                    pneumonia: 'Pneumonia'
+                },
+                logic: function(patientData) {
+                    let score = 0;
+                    // Early stage symptoms
+                    if (patientData.symptoms.includes('fever')) score += 1;
+                    if (patientData.symptoms.includes('fatigue')) score += 1;
+                    if (patientData.symptoms.includes('swollen_lymph_nodes')) score += 2;
+                    if (patientData.symptoms.includes('rash')) score += 2;
+                    // Later stage / more indicative symptoms
+                    if (patientData.symptoms.includes('rapid_weight_loss')) score += 4;
+                    if (patientData.symptoms.includes('night_sweats')) score += 3;
+                    if (patientData.symptoms.includes('mouth_sores')) score += 4;
+                    if (patientData.symptoms.includes('pneumonia')) score += 5; // opportunistic infection
+
+                    let diagnosis = "Low Risk for HIV";
+                    let probability = Math.min(95, 10 + score * 6);
+                    let advice = "The symptoms reported are not highly specific to HIV. However, if you have been at risk, testing is the only way to know for sure.";
+
+                    if (score >= 8) {
+                        diagnosis = "High Risk / Symptoms consistent with AIDS";
+                        advice = "The symptoms reported are serious and consistent with advanced HIV (AIDS). It is extremely important to see a doctor immediately for testing and to start treatment (ART) if positive. Early treatment is crucial.";
+                    } else if (score >= 4) {
+                        diagnosis = "Moderate Risk / Symptoms consistent with Acute HIV";
+                        advice = "The symptoms are consistent with the early stages of an HIV infection. It is strongly recommended to get tested. Remember that early diagnosis and treatment can lead to a long, healthy life.";
+                    }
+                    return { diagnosis, probability, advice };
+                }
+            },
+            mental_health: {
+                name: 'Mental Health (Depression Screen)',
+                symptoms: {
+                    loss_of_interest: 'Little interest or pleasure',
+                    feeling_down: 'Feeling down, depressed, or hopeless',
+                    sleep_issues: 'Sleep disturbances',
+                    low_energy: 'Feeling tired or having little energy',
+                    appetite_changes: 'Changes in appetite',
+                    low_self_esteem: 'Low self-esteem or guilt',
+                    concentration_issues: 'Trouble concentrating',
+                    restlessness_slowness: 'Restlessness or slowness',
+                    self_harm_thoughts: 'Thoughts of self-harm'
+                },
+                logic: function(patientData) {
+                    let score = patientData.symptoms.length;
+                    if (patientData.symptoms.includes('self_harm_thoughts')) score += 3; // This is a critical symptom
+
+                    let diagnosis = "Low Indication of Depressive Symptoms";
+                    let probability = Math.min(95, 10 + score * 8);
+                    let advice = "Based on your answers, you show few signs of depression. It's still important to take care of your mental well-being.";
+
+                    if (score >= 7) {
+                        diagnosis = "High Indication of Depressive Symptoms";
+                        advice = "The symptoms reported strongly suggest a depressive episode. It is crucial to speak with a mental health professional or a doctor as soon as possible. Effective treatments are available. If you have thoughts of self-harm, please seek help immediately.";
+                    } else if (score >= 4) {
+                        diagnosis = "Moderate Indication of Depressive Symptoms";
+                        advice = "You are experiencing several symptoms of depression. Talking to a healthcare provider or a mental health professional could be very helpful to understand what's going on and to find support.";
+                    }
+                    return { diagnosis, probability, advice };
+                }
+            }
+        };
+
+        function updateSymptomChecklist(diseaseKey) {
+            const profile = diseaseProfiles[diseaseKey];
+            symptomsListDiv.innerHTML = ''; // Clear current symptoms
+
+            if (profile && profile.symptoms) {
+                for (const key in profile.symptoms) {
+                    const symptomLabel = profile.symptoms[key];
+                    const symptomItem = document.createElement('div');
+                    symptomItem.className = 'symptom-item';
+                    symptomItem.innerHTML = `<input type="checkbox" name="symptoms" value="${key}"> ${symptomLabel}`;
+                    symptomsListDiv.appendChild(symptomItem);
+                }
+            }
+        }
+
+        diseaseSelect.addEventListener('change', (event) => {
+            updateSymptomChecklist(event.target.value);
+        });
+
+        diagnosisForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const patientName = document.getElementById('patientName').value.trim();
+            const age = document.getElementById('patientAge').value;
+            const temp = document.getElementById('bodyTemp').value;
+            const symptoms = Array.from(document.querySelectorAll('input[name="symptoms"]:checked')).map(el => el.value);
+            const customSymptomsText = document.getElementById('customSymptoms').value.trim().toLowerCase();
+            const diseaseKey = diseaseSelect.value;
+
+            if (!patientName || !age || !temp) {
+                alert('Please fill in patient name, age, and temperature.');
+                return;
+            }
+            if (symptoms.length === 0 && !customSymptomsText) {
+                alert('Please select at least one symptom or describe other symptoms.');
+                return;
+            }
+
+            const patientData = { age, temp, symptoms, customSymptomsText };
+            const { diagnosis, probability, advice } = diseaseProfiles[diseaseKey].logic(patientData);
+
+            const allSymptomsForRecord = [...symptoms];
+            if (customSymptomsText) allSymptomsForRecord.push(`Other: ${document.getElementById('customSymptoms').value.trim()}`);
+
+            const resultContainer = document.getElementById('diagnosisResult');
+            resultContainer.innerHTML = `
+                <h3>${diagnosis}</h3>
+                <p><strong>Probability:</strong> ${probability}%</p>
+                <p><strong>Advice:</strong> ${advice}</p>
+                <button id="saveDiagnosisBtn" class="btn" style="margin-top: 20px; background-color: #28a745;">Save to Medical Records</button>
+                <p style="font-size: 0.8rem; margin-top: 15px; color: #666;"><em>Disclaimer: This is an AI-generated preliminary diagnosis and not a substitute for professional medical advice.</em></p>
+            `;
+
+            document.getElementById('saveDiagnosisBtn').addEventListener('click', function() {
+                const newRecord = {
+                    id: Date.now(),
+                    patientName: patientName,
+                    recordDate: new Date().toISOString().split('T')[0], // Today's date
+                    diagnosis: diagnosis,
+                    treatment: '', // Treatment to be filled by a doctor
+                    notes: `AI-generated diagnosis.
+Disease Profile: ${diseaseProfiles[diseaseKey].name}.
+Symptoms: ${allSymptomsForRecord.join(', ')}.
+Body Temperature: ${temp}°C.
+Patient Age: ${age}.
+AI Advice: ${advice}`
+                };
+
+                // Get existing records, or initialize a new array
+                let records = JSON.parse(localStorage.getItem('medicalRecords')) || [];
+                records.unshift(newRecord); // Add to the beginning
+
+                // Save back to localStorage
+                localStorage.setItem('medicalRecords', JSON.stringify(records));
+
+                // Show success message instead of redirecting
+                showModal('Success', 'The diagnosis has been saved to the patient\'s medical records.', 'success');
+
+                // Disable the button to prevent multiple saves
+                this.textContent = 'Saved';
+                this.disabled = true;
+            });
+        });
+
+        // Initialize the page with the default symptom list
+        document.addEventListener('DOMContentLoaded', () => {
+            updateSymptomChecklist(diseaseSelect.value);
+        });
+
+        // Header Search Logic
+        const searchIconToggle = document.getElementById('search-icon-toggle');
+        const headerSearchContainer = searchIconToggle.parentElement;
+        const headerSearchInput = document.getElementById('headerSearchInput');
+
+        searchIconToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            headerSearchContainer.classList.toggle('active');
+            if (headerSearchContainer.classList.contains('active')) {
+                headerSearchInput.focus();
+            }
+        });
+
+        headerSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const query = headerSearchInput.value.trim();
+                if (query) {
+                    window.location.href = `dashboard.html?q=${encodeURIComponent(query)}`;
+                }
+            }
+        });
+
+        // --- Translation Logic ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const translateDropdown = document.querySelector('.dropdown-menu');
+            if (translateDropdown) {
+                translateDropdown.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const target = event.target;
+                    if (target.tagName === 'A') {
+                        const langCode = target.dataset.lang;
+                        if (langCode) {
+                            const translateElement = document.querySelector('#google_translate_element select');
+                            if (translateElement) {
+                                translateElement.value = langCode;
+                                translateElement.dispatchEvent(new Event('change'));
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reusing styles for consistency */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-image: url('https://plus.unsplash.com/premium_photo-1661767897334-bbfbdfdc4d1a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWVkaWNhbHxlbnwwfHwwfHx8MA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #333;
+            padding-top: 90px; /* Add padding to push content below fixed header */
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #009A44, #00642E);
+            color: white;
+            padding: 20px 0;
+            position: fixed; /* Make header sticky */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 50px;
+            margin-right: 15px;
+            border-radius: 50%;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            margin-right: 15px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        nav ul li a i {
+            margin-right: 6px;
+            font-size: 1.1rem;
+        }
+
+        nav ul li a.logout-btn {
+            background-color: #ff6b6b;
+            font-weight: 600;
+        }
+
+        nav ul li a.logout-btn:hover {
+            background-color: #ff5252;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            background-color: #1714ee;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            padding: 8px 0;
+            z-index: 1;
+            display: none;
+        }
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .header-search {
+            position: relative;
+        }
+
+        .header-search #headerSearchInput {
+            width: 0;
+            padding: 8px 0;
+            border: none;
+            border-bottom: 2px solid white;
+            background: transparent;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.4s ease;
+            opacity: 0;
+        }
+
+        .header-search #headerSearchInput::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .header-search.active #headerSearchInput {
+            width: 200px;
+            padding: 8px 10px;
+            opacity: 1;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            background-color: #6c757d;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.5rem;
+        }
+
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title h1 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: #009A44;
+        }
+
+        .pharmacy-section {
+            margin-bottom: 50px;
+        }
+
+        .pharmacy-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        thead th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+
+        tbody tr:hover {
+         background-color: #f9f9f9;
+        }
+
+        .action-btn {
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: white;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dispense-btn { background-color: #28a745; }
+        .dispense-btn:hover { background-color: #218838; }
+
+        .restock-btn { background-color: #17a2b8; }
+        .restock-btn:hover { background-color: #138496; }
+
+        .status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+        .status.pending { background-color: #ffc107; color: #333; }
+        .status.dispensed { background-color: #28a745; color: white; }
+
+        .create-btn { background-color: #007bff; }
+        .create-btn:hover { background-color: #0056b3; }
+
+        .delete-btn { background-color: #dc3545; }
+        .delete-btn:hover { background-color: #c82333; }
+
+        .add-medication-form {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #eee;
+        }
+
+        .add-medication-form h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-group.full-width {
+            flex-basis: 100%;
+            min-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Header content copied from other pages -->
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-laptop-medical"></i>
+                <img src="https://th.bing.com/th/id/OIP.rvsVTBcx442mamhkARD2QAAAAA?w=164&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="Logo">
+                <h1>MESMTF</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a></li>
+                    <li class="header-search">
+                        <a href="#" id="search-icon-toggle"><i class="fas fa-search"></i></a>
+                        <input type="text" id="headerSearchInput" placeholder="Search...">
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle"><i class="fas fa-globe"></i> Translate</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Oshiwambo</a></li>
+                            <li><a href="#">Afrikaans</a></li>
+                            <li><a href="#">German</a></li>
+                            <li><a href="#">Otjiherero</a></li>
+                            <li><a href="#">RuKwangali</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="login.html" class="logout-btn">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <a href="dashboard.html" class="back-btn" title="Back to Dashboard">&larr;</a>
+        <div class="section-title">
+            <h1>Pharmacy Management</h1>
+        </div>
+
+        <!-- Prescriptions Section -->
+        <div class="pharmacy-section">
+            <h2><i class="fas fa-prescription-bottle-alt"></i> Pending Prescriptions</h2>
+            <div class="add-medication-form">
+                <h3>Create New Prescription</h3>
+                <form id="addPrescriptionForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="prescriptionPatientName">Patient Name</label>
+                            <select id="prescriptionPatientName" required>
+                                <option value="">-- Select a Patient --</option>
+                                <!-- Dynamically populated -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="prescriptionMed">Medication</label>
+                            <input type="text" id="prescriptionMed" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="prescriptionDosage">Dosage</label>
+                            <input type="text" id="prescriptionDosage" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="action-btn create-btn" style="width: 100%;">Create Prescription</button>
+                </form>
+            </div>
+            <input type="text" id="prescriptionSearch" class="search-input" placeholder="Search prescriptions by patient or medication...">
+            <table id="prescriptionsTable">
+                <thead>
+                    <tr>
+                        <th>Patient Name</th>
+                        <th>Medication</th>
+                        <th>Dosage</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamically populated -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Inventory Section -->
+        <div class="pharmacy-section">
+            <h2><i class="fas fa-pills"></i> Medication Inventory</h2>
+
+            <div class="add-medication-form">
+                <h3>Add New Medication</h3>
+                <form id="addMedicationForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="medName">Medication Name</label>
+                            <input type="text" id="medName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="medStock">Stock Quantity (packs)</label>
+                            <input type="number" id="medStock" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="medSupplier">Supplier</label>
+                            <input type="text" id="medSupplier" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="medExpiry">Expiry Date</label>
+                            <input type="date" id="medExpiry" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="medUsage">Used For (Disease)</label>
+                            <input type="text" id="medUsage" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="action-btn create-btn" style="width: 100%;">Add to Inventory</button>
+                </form>
+            </div>
+
+            <input type="text" id="inventorySearch" class="search-input" placeholder="Search inventory by medication name...">
+            <table id="inventoryTable">
+                <thead>
+                    <tr>
+                        <th>Medication Name</th>
+                        <th>Used For</th>
+                        <th>Stock Quantity</th>
+                        <th>Supplier</th>
+                        <th>Expiry Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamically populated -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // --- GLOBAL STATE ---
+        let prescriptions = [];
+        let inventory = [];
+
+        // --- DOM ELEMENTS ---
+        const prescriptionsTableBody = document.getElementById('prescriptionsTable').querySelector('tbody');
+        const inventoryTableBody = document.getElementById('inventoryTable').querySelector('tbody');
+        const addPrescriptionForm = document.getElementById('addPrescriptionForm');
+        const addMedicationForm = document.getElementById('addMedicationForm');
+        const prescriptionSearch = document.getElementById('prescriptionSearch');
+        const inventorySearch = document.getElementById('inventorySearch');
+
+        // --- DATA & STORAGE FUNCTIONS ---
+        function saveData() {
+            localStorage.setItem('pharmacyPrescriptions', JSON.stringify(prescriptions));
+            localStorage.setItem('pharmacyInventory', JSON.stringify(inventory));
+        }
+
+        function loadData() {
+            const storedPrescriptions = JSON.parse(localStorage.getItem('pharmacyPrescriptions'));
+            const storedInventory = JSON.parse(localStorage.getItem('pharmacyInventory'));
+
+            if (storedPrescriptions) {
+                prescriptions = storedPrescriptions;
+            } else {
+                prescriptions = [
+                    { id: 1, patientName: 'John Doe', medication: 'Artemether-lumefantrine', dosage: '20/120mg, twice daily', date: '2024-07-21', status: 'Pending' },
+                    { id: 2, patientName: 'Jane Smith', medication: 'Ciprofloxacin', dosage: '500mg, twice daily', date: '2024-07-20', status: 'Pending' }
+                ];
+            }
+
+            if (storedInventory) {
+                inventory = storedInventory;
+            } else {
+                inventory = [
+                    { id: 1, name: 'Artemether-lumefantrine', usage: 'Malaria', stock: 150, unit: 'packs', supplier: 'Pharma Inc.', expiry: '2025-12-31' },
+                    { id: 2, name: 'Ciprofloxacin', usage: 'Typhoid Fever', stock: 80, unit: 'packs', supplier: 'Med Supplies', expiry: '2026-06-30' },
+                    { id: 3, name: 'Paracetamol', usage: 'Pain/Fever Relief', stock: 500, unit: 'packs', supplier: 'Health Goods', expiry: '2025-08-31' },
+                    { id: 4, name: 'Metformin', usage: 'Diabetes', stock: 400, unit: 'packs', supplier: 'Health Goods', expiry: '2026-07-31' },
+                    { id: 5, name: 'Isoniazid', usage: 'Tuberculosis (TB)', stock: 300, unit: 'packs', supplier: 'TB Meds Co.', expiry: '2026-01-31' }
+                ];
+            }
+            saveData();
+        }
+
+        // --- UI & RENDERING FUNCTIONS ---
+        function renderPrescriptions() {
+            prescriptionsTableBody.innerHTML = '';
+            const filter = prescriptionSearch.value.toUpperCase();
+            const filtered = prescriptions.filter(p => p.patientName.toUpperCase().includes(filter) || p.medication.toUpperCase().includes(filter));
+
+            filtered.forEach(p => {
+                const row = prescriptionsTableBody.insertRow();
+                row.dataset.id = p.id;
+                row.innerHTML = `
+                    <td>${p.patientName}</td>
+                    <td>${p.medication}</td>
+                    <td>${p.dosage}</td>
+                    <td>${p.date}</td>
+                    <td><span class="status ${p.status.toLowerCase()}">${p.status}</span></td>
+                    <td><button class="action-btn dispense-btn" ${p.status === 'Dispensed' ? 'disabled' : ''}>${p.status === 'Dispensed' ? 'Done' : 'Dispense'}</button></td>
+                `;
+            });
+        }
+
+        function renderInventory() {
+            inventoryTableBody.innerHTML = '';
+            const filter = inventorySearch.value.toUpperCase();
+            const filtered = inventory.filter(i => i.name.toUpperCase().includes(filter));
+
+            filtered.forEach(i => {
+                const row = inventoryTableBody.insertRow();
+                row.dataset.id = i.id;
+                row.innerHTML = `
+                    <td>${i.name}</td>
+                    <td>${i.usage}</td>
+                    <td>${i.stock} ${i.unit}</td>
+                    <td>${i.supplier}</td>
+                    <td>${i.expiry}</td>
+                    <td><button class="action-btn restock-btn">Restock</button> <button class="action-btn delete-btn">Delete</button></td>
+                `;
+            });
+        }
+
+        // --- EVENT HANDLERS ---
+        addPrescriptionForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const patientName = document.getElementById('prescriptionPatientName').value.trim();
+            const medication = document.getElementById('prescriptionMed').value.trim();
+            const dosage = document.getElementById('prescriptionDosage').value.trim();
+            if (!patientName || !medication || !dosage) return alert('Please fill out all fields.');
+
+            prescriptions.unshift({
+                id: Date.now(), patientName, medication, dosage,
+                date: new Date().toISOString().split('T')[0], status: 'Pending'
+            });
+            saveData();
+            renderPrescriptions();
+            addPrescriptionForm.reset();
+        });
+
+        addMedicationForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const medName = document.getElementById('medName').value.trim();
+            const medStock = parseInt(document.getElementById('medStock').value.trim(), 10);
+            const medSupplier = document.getElementById('medSupplier').value.trim();
+            const medExpiry = document.getElementById('medExpiry').value;
+            const medUsage = document.getElementById('medUsage').value.trim();
+            if (!medName || isNaN(medStock) || !medSupplier || !medExpiry || !medUsage) return alert('Please fill out all fields correctly.');
+
+            inventory.unshift({
+                id: Date.now(), name: medName, usage: medUsage, stock: medStock, unit: 'packs', supplier: medSupplier, expiry: medExpiry
+            });
+            saveData();
+            renderInventory();
+            addMedicationForm.reset();
+        });
+
+        prescriptionsTableBody.addEventListener('click', function(event) {
+            if (event.target.classList.contains('dispense-btn') && !event.target.disabled) {
+                const row = event.target.closest('tr');
+                const prescriptionId = Number(row.dataset.id);
+                const prescription = prescriptions.find(p => p.id === prescriptionId);
+                const medInInventory = inventory.find(i => i.name.toLowerCase() === prescription.medication.toLowerCase());
+
+                if (medInInventory) {
+                    if (medInInventory.stock > 0) {
+                        medInInventory.stock--;
+                        prescription.status = 'Dispensed';
+                        saveData();
+                        renderPrescriptions();
+                        renderInventory();
+                    } else {
+                        alert(`Cannot dispense. ${medInInventory.name} is out of stock.`);
+                    }
+                } else {
+                    alert(`Medication "${prescription.medication}" not found in inventory. Please add it first.`);
+                }
+            }
+        });
+
+        inventoryTableBody.addEventListener('click', function(event) {
+            const target = event.target;
+            const row = target.closest('tr');
+            if (!row) return;
+            const inventoryId = Number(row.dataset.id);
+            const item = inventory.find(i => i.id === inventoryId);
+
+            if (target.classList.contains('restock-btn')) {
+                const restockAmountStr = prompt(`Current stock for ${item.name} is ${item.stock}. How many ${item.unit} to add?`);
+                if (restockAmountStr) {
+                    const restockAmount = parseInt(restockAmountStr, 10);
+                    if (!isNaN(restockAmount) && restockAmount > 0) {
+                        item.stock += restockAmount;
+                        saveData();
+                        renderInventory();
+                    } else {
+                        alert('Invalid quantity. Please enter a positive number.');
+                    }
+                }
+            } else if (target.classList.contains('delete-btn')) {
+                if (confirm(`Are you sure you want to delete ${item.name} from the inventory?`)) {
+                    inventory = inventory.filter(i => i.id !== inventoryId);
+                    saveData();
+                    renderInventory();
+                }
+            }
+        });
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            renderPrescriptions();
+            renderInventory();
+
+            // --- Populate Patient Dropdown ---
+            const patientSelect = document.getElementById('prescriptionPatientName');
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const patients = users.filter(user => user.role === 'patient');
+
+            if (patients.length > 0) {
+                patients.forEach(p => {
+                    const option = document.createElement('option');
+                    option.value = p.fullName;
+                    option.textContent = p.fullName;
+                    patientSelect.appendChild(option);
+                });
+            } else {
+                const option = document.createElement('option');
+                option.textContent = 'No patients registered';
+                option.disabled = true;
+                patientSelect.appendChild(option);
+            }
+
+            prescriptionSearch.addEventListener('keyup', renderPrescriptions);
+            inventorySearch.addEventListener('keyup', renderInventory);
+        });
+    </script>
+    <script src="header-search.js" defer></script>
+</body>
+</html>

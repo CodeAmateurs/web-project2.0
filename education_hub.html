@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MESMTF/Health Education Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reusing styles for consistency */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-image: url('https://plus.unsplash.com/premium_photo-1661755572566-686783ba90a3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGVhbHRoJTIwRWR1Y2F0aW9uJTIwSHVifGVufDB8fDB8fHww');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #333;
+            padding-top: 90px;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #009A44, #00642E);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo { display: flex; align-items: center; }
+        .logo img { height: 50px; margin-right: 15px; border-radius: 50%; }
+        .logo i { font-size: 2.5rem; margin-right: 15px; }
+        .logo h1 { font-size: 1.8rem; font-weight: 600; }
+        nav ul { display: flex; list-style: none; }
+        nav ul li { margin-left: 25px; }
+        nav ul li a { color: white; text-decoration: none; font-weight: 500; transition: all 0.3s ease; padding: 8px 12px; border-radius: 4px; display: flex; align-items: center; }
+        nav ul li a:hover { background-color: rgba(255, 255, 255, 0.2); }
+        nav ul li a i { margin-right: 6px; font-size: 1.1rem; }
+        nav ul li a.logout-btn { background-color: #ff6b6b; font-weight: 600; }
+        nav ul li a.logout-btn:hover { background-color: #ff5252; }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            background-color: #6c757d;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.5rem;
+        }
+        .back-btn:hover { background-color: #5a6268; }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section-title h1 { font-size: 2.2rem; margin-bottom: 15px; color: #009A44; }
+        .section-title p { color: #666; max-width: 700px; margin: 0 auto; }
+
+        .accordion {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .accordion-item { border-bottom: 1px solid #ddd; }
+        .accordion-item:last-child { border-bottom: none; }
+        .accordion-header { background-color: #f8f9fa; padding: 15px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem; font-weight: 600; color: #333; }
+        .accordion-header:hover { background-color: #e9ecef; }
+        .accordion-header i { transition: transform 0.3s ease; }
+        .accordion-content { padding: 20px; display: none; background-color: white; }
+        .accordion-content h4 { color: #009A44; margin-top: 15px; margin-bottom: 10px; }
+        .accordion-content h4:first-child { margin-top: 0; }
+        .accordion-content ul { list-style-position: inside; padding-left: 10px; }
+        .accordion-content li { margin-bottom: 8px; }
+        .accordion-item.active .accordion-header i { transform: rotate(180deg); }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-laptop-medical"></i>
+                <img src="https://th.bing.com/th/id/OIP.rvsVTBcx442mamhkARD2QAAAAA?w=164&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="Logo">
+                <h1>MESMTF</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a></li>
+                    <li><a href="login.html" class="logout-btn">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <a href="dashboard.html" class="back-btn" title="Back to Dashboard">&larr;</a>
+        <div class="section-title">
+            <h1>Health Education Hub</h1>
+            <p>Your trusted source for information on Malaria and Typhoid Fever prevention, symptoms, and care.</p>
+        </div>
+
+        <div class="accordion" id="educationAccordion">
+            <!-- Malaria Section -->
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span><i class="fas fa-mosquito" style="margin-right: 10px; color: #dc3545;"></i>Malaria</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <h4>What is Malaria?</h4>
+                    <p>Malaria is a life-threatening disease caused by parasites that are transmitted to people through the bites of infected female Anopheles mosquitoes.</p>
+                    
+                    <h4>Common Symptoms</h4>
+                    <ul>
+                        <li>High fever and chills</li>
+                        <li>Headache and muscle pain</li>
+                        <li>Fatigue and weakness</li>
+                        <li>Nausea, vomiting, and diarrhea</li>
+                    </ul>
+
+                    <h4>Prevention is Key</h4>
+                    <ul>
+                        <li>Use insect repellent and wear long-sleeved clothing.</li>
+                        <li>Sleep under insecticide-treated mosquito nets.</li>
+                        <li>Eliminate standing water around your home where mosquitoes breed.</li>
+                        <li>Take antimalarial drugs if you are traveling to a high-risk area.</li>
+                    </ul>
+                    <p>For more detailed information, visit the <a href="https://www.cdc.gov/malaria/index.html" target="_blank">CDC Malaria Page</a>.</p>
+                </div>
+            </div>
+
+            <!-- Typhoid Fever Section -->
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span><i class="fas fa-bacteria" style="margin-right: 10px; color: #ffc107;"></i>Typhoid Fever</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <h4>What is Typhoid Fever?</h4>
+                    <p>Typhoid fever is a serious bacterial infection caused by Salmonella Typhi. It is usually spread through contaminated food or water.</p>
+                    
+                    <h4>Common Symptoms</h4>
+                    <ul>
+                        <li>Sustained high fever</li>
+                        <li>Weakness and stomach pain</li>
+                        <li>Headache and loss of appetite</li>
+                        <li>Constipation or diarrhea</li>
+                    </ul>
+
+                    <h4>Prevention is Key</h4>
+                    <ul>
+                        <li>Ensure your drinking water is safe (boil it or use a reliable filter).</li>
+                        <li>Wash your hands thoroughly with soap and water, especially before eating.</li>
+                        <li>Avoid raw fruits and vegetables unless you can peel them yourself.</li>
+                        <li>Get vaccinated against typhoid fever if you live in or are traveling to an endemic area.</li>
+                    </ul>
+                    <p>For more detailed information, visit the <a href="https://www.who.int/news-room/fact-sheets/detail/typhoid" target="_blank">WHO Fact Sheet on Typhoid</a>.</p>
+                </div>
+            </div>
+
+            <!-- General Health Section -->
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span><i class="fas fa-heartbeat" style="margin-right: 10px; color: #007bff;"></i>General Health & Hygiene</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <h4>Handwashing</h4>
+                    <p>Proper handwashing is one of the most effective ways to prevent the spread of many illnesses, including Typhoid. Wash your hands with soap and clean water for at least 20 seconds.</p>
+                    
+                    <h4>Food Safety</h4>
+                    <p>Always cook food thoroughly. Eat food while it is still hot. Avoid food from street vendors unless you are sure it is prepared hygienically.</p>
+
+                    <h4>When to See a Doctor</h4>
+                    <p>If you experience a high fever that does not go away, along with any of the other symptoms mentioned, it is crucial to seek medical attention immediately. Early diagnosis and treatment are key to a full recovery.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const item = header.parentElement;
+                const content = header.nextElementSibling;
+
+                item.classList.toggle('active');
+                if (content.style.display === 'block') {
+                    content.style.display = 'none';
+                } else {
+                    content.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

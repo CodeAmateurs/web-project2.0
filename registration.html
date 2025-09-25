@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="auth.css">
+    <title>Register - MESMTF</title>
+</head>
+<body>
+    <div class="auth-container register-container">
+        <div class="auth-header">
+            <i class="fas fa-laptop-medical"></i>
+            <h1>MESMTF</h1>
+        </div>
+        <h2>Create an Account</h2>
+        <p>Join to manage your health records and more.</p>
+        <form id="registrationForm" action="https://formcarry.com/s/O689Q9Vw8P7" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="_gotcha" style="display:none">
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" name="fullName" required>
+            </div>
+            <div class="form-group">
+                <label for="userRole">I am a:</label>
+                <select id="userRole" name="userRole" required>
+                    <option value="">-- Select Role --</option>
+                    <option value="patient">Patient</option>
+                    <option value="doctor">Doctor</option>
+                    <option value="nurse">Nurse</option>
+                    <option value="pharmacist">Pharmacist</option>
+                    <option value="receptionist">Medical Receptionist</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" name="password" required>
+                    <i class="fas fa-eye-slash toggle-password"></i>
+                </div>
+                <div id="password-strength-requirements">
+                    <ul>
+                        <li id="length">At least 8 characters</li>
+                        <li id="lowercase">A lowercase letter</li>
+                        <li id="uppercase">An uppercase letter</li>
+                        <li id="number">A number</li>
+                        <li id="special">A special character (e.g., !@#$%)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <i class="fas fa-eye-slash toggle-password"></i>
+                </div>
+            </div>
+            <button type="submit" class="btn">Register</button>
+        </form>
+        <div class="extra-links">
+            <p>Already have an account? <a href="login.html">Login here</a></p>
+        </div>
+    </div>
+
+    <script>
+        // For demonstration purposes, this form will redirect to the dashboard on submit.
+        // In a real application, you would handle registration and validation here.
+        const passwordInput = document.getElementById('password');
+        const requirements = {
+            length: document.getElementById('length'),
+            lowercase: document.getElementById('lowercase'),
+            uppercase: document.getElementById('uppercase'),
+            number: document.getElementById('number'),
+            special: document.getElementById('special')
+        };
+        let passwordIsValid = false;
+
+        passwordInput.addEventListener('keyup', function() {
+            const value = passwordInput.value;
+            let validCount = 0;
+
+            // Check length
+            if (value.length >= 8) { requirements.length.classList.add('valid'); validCount++; } 
+            else { requirements.length.classList.remove('valid'); }
+
+            // Check lowercase
+            if (/[a-z]/.test(value)) { requirements.lowercase.classList.add('valid'); validCount++; } 
+            else { requirements.lowercase.classList.remove('valid'); }
+
+            // Check uppercase
+            if (/[A-Z]/.test(value)) { requirements.uppercase.classList.add('valid'); validCount++; } 
+            else { requirements.uppercase.classList.remove('valid'); }
+
+            // Check number
+            if (/[0-9]/.test(value)) { requirements.number.classList.add('valid'); validCount++; } 
+            else { requirements.number.classList.remove('valid'); }
+
+            // Check special character
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(value)) { requirements.special.classList.add('valid'); validCount++; } 
+            else { requirements.special.classList.remove('valid'); }
+
+            passwordIsValid = validCount === 5;
+        });
+
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            // Prevent the default form submission to handle it with JavaScript
+            event.preventDefault();
+
+            const userRole = document.getElementById('userRole').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // --- Validation ---
+            if (!passwordIsValid) {
+                alert('Please ensure your password meets all the requirements.');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match. Please try again.');
+                return;
+            }
+
+            if (!userRole) {
+                alert('Please select a user role.');
+                return;
+            }
+
+            // --- User Registration & Session Logic ---
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+
+            // Get existing users or initialize an empty array
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const existingUser = users.find(user => user.email === email);
+
+            if (existingUser) {
+                alert('An account with this email address already exists. Please log in.');
+                return;
+            }
+
+            // Add the new user to our "database"
+            const newUser = { 
+                fullName, email, password, 
+                role: userRole,
+                registrationDate: new Date().toISOString().split('T')[0] // Add registration date
+            };
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // Notify admin panel to update
+            window.dispatchEvent(new Event('usersUpdated'));
+
+
+
+            // Set session info for the new user for the dashboard
+            localStorage.setItem('fullName', fullName);
+            localStorage.setItem('email', email);
+            localStorage.setItem('userRole', userRole);
+
+            // --- Submit form data in the background ---
+            const form = event.target;
+            const formData = new FormData(form);
+            fetch(form.action, {
+                method: form.method,
+                body: formData,
+                headers: { 'Accept': 'application/json' }
+            });
+
+            // --- Redirect to the thank you page ---
+            window.location.href = 'thankyou.html';
+        });
+
+        document.querySelectorAll('.toggle-password').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const passwordInput = this.previousElementSibling;
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                // Toggle the icon
+                if (type === 'password') {
+                    this.classList.replace('fa-eye', 'fa-eye-slash');
+                } else {
+                    this.classList.replace('fa-eye-slash', 'fa-eye');
+                }
+            });
+        });
+
+        // Dynamically change the login link to dashboard if user data exists
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginLink = document.querySelector('.extra-links a[href="login.html"]');
+            const userEmail = localStorage.getItem('email');
+            if (userEmail && loginLink) {
+                loginLink.href = 'dashboard.html';
+            }
+        });
+    </script>
+</body>
+</html>

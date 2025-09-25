@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Administration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reusing styles for consistency */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-image: url('https://plus.unsplash.com/premium_photo-1661767897334-bbfbdfdc4d1a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWVkaWNhbHxlbnwwfHwwfHx8MA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #333;
+            padding-top: 90px; /* Add padding to push content below fixed header */
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #009A44, #00642E);
+            color: white;
+            padding: 20px 0;
+            position: fixed; /* Make header sticky */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 50px;
+            margin-right: 15px;
+            border-radius: 50%;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            margin-right: 15px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        nav ul li a i {
+            margin-right: 6px;
+            font-size: 1.1rem;
+        }
+
+        nav ul li a.logout-btn {
+            background-color: #ff6b6b;
+            font-weight: 600;
+        }
+
+        nav ul li a.logout-btn:hover {
+            background-color: #ff5252;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            background-color: #1714ee;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            padding: 8px 0;
+            z-index: 1;
+            display: none;
+        }
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .header-search {
+            position: relative;
+        }
+
+        .header-search #headerSearchInput {
+            width: 0;
+            padding: 8px 0;
+            border: none;
+            border-bottom: 2px solid white;
+            background: transparent;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.4s ease;
+            opacity: 0;
+        }
+
+        .header-search #headerSearchInput::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .header-search.active #headerSearchInput {
+            width: 200px;
+            padding: 8px 10px;
+            opacity: 1;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            background-color: #6c757d;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.5rem;
+        }
+
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title h1 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: #009A44;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        thead th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+
+        tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .action-btn {
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: white;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .administer-btn { background-color: #007bff; }
+        .administer-btn:hover { background-color: #0056b3; }
+
+        .status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+        .status.pending { background-color: #ffc107; color: #333; }
+        .status.administered { background-color: #28a745; color: white; }
+
+        .add-schedule-form {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #eee;
+        }
+
+        .add-schedule-form h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Header content copied from other pages -->
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-laptop-medical"></i>
+                <img src="https://th.bing.com/th/id/OIP.rvsVTBcx442mamhkARD2QAAAAA?w=164&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="Logo">
+                <h1>MESMTF</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a></li>
+                    <li class="header-search">
+                        <a href="#" id="search-icon-toggle"><i class="fas fa-search"></i></a>
+                        <input type="text" id="headerSearchInput" placeholder="Search...">
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle"><i class="fas fa-globe"></i> Translate</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Oshiwambo</a></li>
+                            <li><a href="#">Afrikaans</a></li>
+                            <li><a href="#">German</a></li>
+                            <li><a href="#">Otjiherero</a></li>
+                            <li><a href="#">RuKwangali</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="login.html" class="logout-btn">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <a href="dashboard.html" class="back-btn" title="Back to Dashboard">&larr;</a>
+        <div class="section-title">
+            <h1>Drug Administration Schedule</h1>
+            <p>Track and confirm medication administration for patients.</p>
+        </div>
+
+        <div class="administration-section">
+            <h2>Today's Schedule</h2>
+            <div class="add-schedule-form">
+                <h3>Add New Schedule</h3>
+                <form id="addScheduleForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="schedulePatientName">Patient Name</label>
+                            <input type="text" id="schedulePatientName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="scheduleMedication">Medication</label>
+                            <input type="text" id="scheduleMedication" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="scheduleDosage">Dosage</label>
+                            <input type="text" id="scheduleDosage" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="scheduleTime">Scheduled Time</label>
+                            <input type="text" id="scheduleTime" placeholder="e.g., 10:00 AM (Morning)" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="action-btn administer-btn" style="width: 100%;">Add to Schedule</button>
+                </form>
+            </div>
+            <input type="text" id="scheduleSearch" class="search-input" placeholder="Search by patient or medication...">
+            <table id="scheduleTable">
+                <thead>
+                    <tr>
+                        <th>Patient Name</th>
+                        <th>Medication</th>
+                        <th>Dosage</th>
+                        <th>Scheduled Time</th>
+                        <th>Status</th>
+                        <th>Notes</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>Artemether-lumefantrine</td>
+                        <td>20/120mg</td>
+                        <td>08:00 AM (Morning)</td>
+                        <td></td>
+                        <td><span class="status pending">Pending</span></td>
+                        <td><button class="action-btn administer-btn">Administer</button></td>
+                    </tr>
+                    <tr>
+                        <td>Jane Smith</td>
+                        <td>Ciprofloxacin</td>
+                        <td>500mg</td>
+                        <td>09:00 AM (Morning)</td>
+                        <td></td>
+                        <td><span class="status pending">Pending</span></td>
+                        <td><button class="action-btn administer-btn">Administer</button></td>
+                    </tr>
+                    <tr>
+                        <td>David Chen</td>
+                        <td>Metformin</td>
+                        <td>500mg</td>
+                        <td>08:30 AM (Morning)</td>
+                        <td>Administered with food.</td>
+                        <td><span class="status administered">Administered</span></td>
+                        <td><button class="action-btn administer-btn" disabled>Done</button></td>
+                    </tr>
+                    <tr>
+                        <td>Maria Garcia</td>
+                        <td>Isoniazid</td>
+                        <td>300mg</td>
+                        <td>09:30 AM (Morning)</td>
+                        <td></td>
+                        <td><span class="status pending">Pending</span></td>
+                        <td><button class="action-btn administer-btn">Administer</button></td>
+                    </tr>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>Artemether-lumefantrine</td>
+                        <td>20/120mg</td>
+                        <td>08:00 PM (Evening)</td>
+                        <td></td>
+                        <td><span class="status pending">Pending</span></td>
+                        <td><button class="action-btn administer-btn">Administer</button></td>
+                    </tr>
+                    <tr>
+                        <td>Jane Smith</td>
+                        <td>Ciprofloxacin</td>
+                        <td>500mg</td>
+                        <td>09:00 PM (Evening)</td>
+                        <td></td>
+                        <td><span class="status pending">Pending</span></td>
+                        <td><button class="action-btn administer-btn">Administer</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('scheduleSearch').addEventListener('keyup', function() {
+            const filter = this.value.toUpperCase();
+            const table = document.getElementById('scheduleTable');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const patientCell = rows[i].getElementsByTagName('td')[0];
+                const medicationCell = rows[i].getElementsByTagName('td')[1];
+                if (patientCell || medicationCell) {
+                    const patientText = patientCell.textContent || patientCell.innerText;
+                    const medicationText = medicationCell.textContent || medicationCell.innerText;
+                    if (patientText.toUpperCase().indexOf(filter) > -1 || medicationText.toUpperCase().indexOf(filter) > -1) {
+                        rows[i].style.display = "";
+                    } else {
+                        rows[i].style.display = "none";
+                    }
+                }
+            }
+        });
+
+        document.getElementById('scheduleTable').addEventListener('click', function(event) {
+            if (event.target.classList.contains('administer-btn') && !event.target.disabled) {
+                const button = event.target;
+                const row = button.closest('tr');
+                const statusCell = row.querySelector('.status');
+                const notesCell = row.cells[4]; // The new notes cell
+
+                const notes = prompt(`Administer ${row.cells[1].textContent} to ${row.cells[0].textContent}?\n\nEnter any notes below (optional):`);
+
+                // Proceed if the user did not click "Cancel"
+                if (notes !== null) {
+                    statusCell.textContent = 'Administered';
+                    statusCell.classList.remove('pending');
+                    statusCell.classList.add('administered');
+
+                    notesCell.textContent = notes; // Add the notes to the cell
+
+                    button.disabled = true;
+                    button.textContent = 'Done';
+                }
+            }
+        });
+
+        const addScheduleForm = document.getElementById('addScheduleForm');
+        const scheduleTableBody = document.getElementById('scheduleTable').getElementsByTagName('tbody')[0];
+
+        addScheduleForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const patientName = document.getElementById('schedulePatientName').value.trim();
+            const medication = document.getElementById('scheduleMedication').value.trim();
+            const dosage = document.getElementById('scheduleDosage').value.trim();
+            const time = document.getElementById('scheduleTime').value.trim();
+
+            if (!patientName || !medication || !dosage || !time) {
+                alert('Please fill out all fields.');
+                return;
+            }
+
+            const newRow = scheduleTableBody.insertRow(0); // Add to the top
+            newRow.innerHTML = `
+                <td>${patientName}</td>
+                <td>${medication}</td>
+                <td>${dosage}</td>
+                <td>${time}</td>
+                <td></td>
+                <td><span class="status pending">Pending</span></td>
+                <td><button class="action-btn administer-btn">Administer</button></td>
+            `;
+
+            addScheduleForm.reset();
+        });
+
+        // Header Search Logic
+        const searchIconToggle = document.getElementById('search-icon-toggle');
+        const headerSearchContainer = searchIconToggle.parentElement;
+        const headerSearchInput = document.getElementById('headerSearchInput');
+
+        searchIconToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            headerSearchContainer.classList.toggle('active');
+            if (headerSearchContainer.classList.contains('active')) {
+                headerSearchInput.focus();
+            }
+        });
+
+        headerSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const query = headerSearchInput.value.trim();
+                if (query) {
+                    window.location.href = `dashboard.html?q=${encodeURIComponent(query)}`;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reusing styles for consistency */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-image: url('https://plus.unsplash.com/premium_photo-1661767897334-bbfbdfdc4d1a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWVkaWNhbHxlbnwwfHwwfHx8MA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #333;
+            padding-top: 90px; /* Add padding to push content below fixed header */
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #009A44, #00642E);
+            color: white;
+            padding: 20px 0;
+            position: fixed; /* Make header sticky */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 50px;
+            margin-right: 15px;
+            border-radius: 50%;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            margin-right: 15px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        nav ul li a i {
+            margin-right: 6px;
+            font-size: 1.1rem;
+        }
+
+        nav ul li a.logout-btn {
+            background-color: #ff6b6b;
+            font-weight: 600;
+        }
+
+        nav ul li a.logout-btn:hover {
+            background-color: #ff5252;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            background-color: #1714ee;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            padding: 8px 0;
+            z-index: 1;
+            display: none;
+        }
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .header-search {
+            position: relative;
+        }
+
+        .header-search #headerSearchInput {
+            width: 0;
+            padding: 8px 0;
+            border: none;
+            border-bottom: 2px solid white;
+            background: transparent;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.4s ease;
+            opacity: 0;
+        }
+
+        .header-search #headerSearchInput::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .header-search.active #headerSearchInput {
+            width: 200px;
+            padding: 8px 10px;
+            opacity: 1;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            background-color: #6c757d;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.5rem;
+        }
+
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-picture-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin-bottom: 20px;
+        }
+
+        #profilePicture {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #009A44;
+        }
+
+        #uploadOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+            font-size: 2rem;
+        }
+
+        .profile-picture-container:hover #uploadOverlay {
+            opacity: 1;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title h1 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: #009A44;
+        }
+
+        .profile-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #eee;
+        }
+
+        .profile-section h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-group input[readonly] {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+
+        .form-group input.invalid {
+            border-color: #dc3545;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85rem;
+            display: none; /* Hidden by default */
+            margin-top: 5px;
+        }
+
+        /* --- Availability Section Styles --- */
+        .availability-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+        }
+
+        .day-column h4 {
+            margin-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .time-slots {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .time-slot {
+            display: flex;
+            align-items: center;
+        }
+
+        .time-slot input {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .availability-actions {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .btn-save-availability {
+            background-color: #28a745;
+        }
+        .btn-save-availability:hover {
+            background-color: #218838;
+        }
+
+        #availabilitySection {
+            display: none; /* Hidden by default, shown for doctors via JS */
+        }
+
+
+
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Header content copied from other pages -->
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-laptop-medical"></i>
+                <img src="https://th.bing.com/th/id/OIP.rvsVTBcx442mamhkARD2QAAAAA?w=164&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="Logo">
+                <h1>MESMTF</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a></li>
+                    <li class="header-search">
+                        <a href="#" id="search-icon-toggle"><i class="fas fa-search"></i></a>
+                        <input type="text" id="headerSearchInput" placeholder="Search...">
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle"><i class="fas fa-globe"></i> Translate</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Oshiwambo</a></li>
+                            <li><a href="#">Afrikaans</a></li>
+                            <li><a href="#">German</a></li>
+                            <li><a href="#">Otjiherero</a></li>
+                            <li><a href="#">RuKwangali</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="login.html" class="logout-btn">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <a href="dashboard.html" class="back-btn" title="Back to Dashboard">&larr;</a>
+        <div class="section-title">
+            <h1>My Profile</h1>
+        </div>
+
+        <div class="profile-header">
+            <div class="profile-picture-container">
+                <img src="https://via.placeholder.com/150" alt="Profile Picture" id="profilePicture">
+                <div id="uploadOverlay"><i class="fas fa-camera"></i></div>
+                <input type="file" id="pictureUpload" accept="image/*" style="display: none;">
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <h2>Profile Information</h2>
+            <form id="profileForm" novalidate>
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" required>
+                    <span class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required>
+                    <span class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="userRole">Role</label>
+                    <input type="text" id="userRole" readonly>
+                </div>
+                <button type="submit" class="btn">Save Changes</button>
+            </form>
+        </div>
+
+        <div class="profile-section">
+            <h2>Change Password</h2>
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label for="currentPassword">Current Password</label>
+                    <input type="password" id="currentPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">New Password</label>
+                    <input type="password" id="newPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmNewPassword">Confirm New Password</label>
+                    <input type="password" id="confirmNewPassword" required>
+                </div>
+                <button type="submit" class="btn">Change Password</button>
+            </form>
+        </div>
+
+        <!-- Availability Section (for Doctors only) -->
+        <div class="profile-section" id="availabilitySection">
+            <h2>My Weekly Availability</h2>
+            <p>Select the time slots you are available for appointments.</p>
+            <div class="availability-grid" id="availabilityGrid">
+                <!-- Grid will be populated by JavaScript -->
+            </div>
+            <div class="availability-actions">
+                <button id="saveAvailabilityBtn" class="btn btn-save-availability">Save Availability</button>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <script>
+        // --- DOM Elements ---
+        const profilePicture = document.getElementById('profilePicture');
+        const uploadOverlay = document.getElementById('uploadOverlay');
+        const pictureUpload = document.getElementById('pictureUpload');
+        const profileForm = document.getElementById('profileForm');
+        const passwordForm = document.getElementById('passwordForm');
+        const fullNameInput = document.getElementById('fullName');
+        const emailInput = document.getElementById('email');
+        const userRoleInput = document.getElementById('userRole');
+        const newPasswordInput = document.getElementById('newPassword');
+        const confirmNewPasswordInput = document.getElementById('confirmNewPassword');
+        const availabilitySection = document.getElementById('availabilitySection');
+        const availabilityGrid = document.getElementById('availabilityGrid');
+
+        /**
+         * Loads user data from localStorage and populates the profile page.
+         */
+        function loadUserProfile() {
+            const userRole = localStorage.getItem('userRole') || 'Patient';
+            const fullName = localStorage.getItem('fullName') || 'John Doe';
+            const email = localStorage.getItem('email') || 'john.doe@example.com';
+            const savedPicture = localStorage.getItem('profilePicture');
+
+            fullNameInput.value = fullName;
+            emailInput.value = email;
+            userRoleInput.value = userRole.charAt(0).toUpperCase() + userRole.slice(1);
+
+            if (savedPicture) {
+                profilePicture.src = savedPicture;
+            }
+
+            // Show availability section for doctors
+            if (userRole === 'doctor') {
+                setupAvailabilityGrid();
+            }
+        }
+
+        /**
+         * Handles the submission of the profile information form.
+         */
+        function handleProfileUpdate(event) {
+            event.preventDefault();
+            // Trigger validation on all fields before submitting
+            const isFormValid = validateFullName() & validateEmail();
+
+            if (isFormValid) {
+                localStorage.setItem('fullName', fullNameInput.value);
+                localStorage.setItem('email', emailInput.value);
+                alert('Profile updated successfully!');
+            }
+        }
+
+        /**
+         * Handles the submission of the password change form.
+         */
+        function handlePasswordChange(event) {
+            event.preventDefault();
+            const newPassword = newPasswordInput.value;
+            const confirmNewPassword = confirmNewPasswordInput.value;
+
+            if (newPassword !== confirmNewPassword) {
+                alert('New passwords do not match. Please try again.');
+                return;
+            }
+
+            if (newPassword.length < 8) {
+                alert('New password must be at least 8 characters long.');
+                return;
+            }
+
+            alert('Password changed successfully!');
+            passwordForm.reset();
+        }
+
+        /**
+         * Handles the file input change for the profile picture.
+         */
+        function handlePictureUpload(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                profilePicture.src = reader.result;
+                localStorage.setItem('profilePicture', reader.result);
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        /**
+         * Validates the full name field.
+         */
+        function validateFullName() {
+            const value = fullNameInput.value.trim();
+            const errorSpan = fullNameInput.nextElementSibling;
+            if (value === '') {
+                fullNameInput.classList.add('invalid');
+                errorSpan.textContent = 'Full Name cannot be empty.';
+                errorSpan.style.display = 'block';
+                return false;
+            }
+            fullNameInput.classList.remove('invalid');
+            errorSpan.style.display = 'none';
+            return true;
+        }
+
+        /**
+         * Validates the email field.
+         */
+        function validateEmail() {
+            const value = emailInput.value.trim();
+            const errorSpan = emailInput.nextElementSibling;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (value === '') {
+                emailInput.classList.add('invalid');
+                errorSpan.textContent = 'Email cannot be empty.';
+                errorSpan.style.display = 'block';
+                return false;
+            } else if (!emailRegex.test(value)) {
+                emailInput.classList.add('invalid');
+                errorSpan.textContent = 'Please enter a valid email address.';
+                errorSpan.style.display = 'block';
+                return false;
+            }
+            emailInput.classList.remove('invalid');
+            errorSpan.style.display = 'none';
+            return true;
+        }
+
+        /**
+         * Sets up the availability grid for doctors.
+         */
+        function setupAvailabilityGrid() {
+            availabilitySection.style.display = 'block';
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+            const timeSlots = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00'];
+            const doctorEmail = localStorage.getItem('email');
+            const allAvailabilities = JSON.parse(localStorage.getItem('doctorAvailability')) || {};
+            const doctorAvailability = allAvailabilities[doctorEmail] || {};
+
+            availabilityGrid.innerHTML = '';
+            days.forEach(day => {
+                const dayColumn = document.createElement('div');
+                dayColumn.className = 'day-column';
+                let timeSlotsHTML = '<div class="time-slots">';
+                timeSlots.forEach(time => {
+                    const isChecked = doctorAvailability[day] && doctorAvailability[day].includes(time);
+                    timeSlotsHTML += `
+                        <label class="time-slot">
+                            <input type="checkbox" data-day="${day}" value="${time}" ${isChecked ? 'checked' : ''}>
+                            ${time}
+                        </label>
+                    `;
+                });
+                timeSlotsHTML += '</div>';
+                dayColumn.innerHTML = `<h4>${day}</h4>${timeSlotsHTML}`;
+                availabilityGrid.appendChild(dayColumn);
+            });
+
+            document.getElementById('saveAvailabilityBtn').addEventListener('click', handleSaveAvailability);
+        }
+
+        /**
+         * Saves the doctor's availability to localStorage.
+         */
+        function handleSaveAvailability() {
+            const doctorEmail = localStorage.getItem('email');
+            const allAvailabilities = JSON.parse(localStorage.getItem('doctorAvailability')) || {};
+            const newAvailability = {};
+
+            const checkedSlots = document.querySelectorAll('#availabilityGrid input:checked');
+            checkedSlots.forEach(checkbox => {
+                const day = checkbox.dataset.day;
+                const time = checkbox.value;
+                if (!newAvailability[day]) {
+                    newAvailability[day] = [];
+                }
+                newAvailability[day].push(time);
+            });
+
+            allAvailabilities[doctorEmail] = newAvailability;
+            localStorage.setItem('doctorAvailability', JSON.stringify(allAvailabilities));
+
+            alert('Availability saved successfully!');
+        }
+
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserProfile();
+
+            // Setup Event Listeners
+            uploadOverlay.addEventListener('click', () => pictureUpload.click());
+            pictureUpload.addEventListener('change', handlePictureUpload);
+            profileForm.addEventListener('submit', handleProfileUpdate);
+            passwordForm.addEventListener('submit', handlePasswordChange);
+
+            // Real-time validation listeners
+            fullNameInput.addEventListener('input', validateFullName);
+            emailInput.addEventListener('input', validateEmail);
+        });
+
+        // Header Search Logic
+        const searchIconToggle = document.getElementById('search-icon-toggle');
+        const headerSearchContainer = searchIconToggle.parentElement;
+        const headerSearchInput = document.getElementById('headerSearchInput');
+
+        searchIconToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            headerSearchContainer.classList.toggle('active');
+            if (headerSearchContainer.classList.contains('active')) {
+                headerSearchInput.focus();
+            }
+        });
+
+        headerSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const query = headerSearchInput.value.trim();
+                if (query) {
+                    window.location.href = `dashboard.html?q=${encodeURIComponent(query)}`;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

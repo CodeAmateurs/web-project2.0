@@ -1,0 +1,65 @@
+/* --- Reusable Custom Modal Styles --- */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px);
+    animation: modalFadeIn 0.3s ease-in-out;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    /* Use CSS variable if available from main sheets, otherwise fallback to white */
+    background-color: var(--card-bg, #fff); 
+    color: var(--text-color, #333);
+    margin: 15% auto;
+    padding: 30px;
+    border-top: 5px solid #dc3545; /* Default to error color */
+    width: 90%;
+    max-width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    text-align: center;
+    position: relative;
+    animation: modalSlideIn 0.4s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-content.success { border-top-color: #28a745; }
+.modal-content.info { border-top-color: #007bff; }
+
+.modal-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: #dc3545; /* Default to error color */
+}
+
+.modal-icon.success { color: #28a745; }
+.modal-icon.info { color: #007bff; }
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.close-button:hover { color: #333; }

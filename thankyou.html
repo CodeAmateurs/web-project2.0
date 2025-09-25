@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="3;url=dashboard.html">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="auth.css">
+    <title>Thank You - MESMTF</title>
+    <style>
+        .thank-you-container {
+            animation: fadeIn 0.5s ease-in-out;
+            text-align: center;
+        }
+        .thank-you-container i {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 20px;
+            animation: popIn 0.5s ease-out 0.2s backwards;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .thank-you-container p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #009A44;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 25px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container thank-you-container">
+        <i class="fas fa-check-circle"></i>
+        <h2>Registration Successful!</h2>
+        <p>Thank you for joining MESMTF. You will be redirected to your dashboard shortly.</p>
+        <div class="loader"></div>
+    </div>
+</body>
+</html>

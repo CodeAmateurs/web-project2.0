@@ -1,0 +1,250 @@
+/* Shared styles for Login and Registration */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://media.istockphoto.com/id/1434636428/photo/namibia-3d-flag.jpg?s=612x612&w=0&k=20&c=mQfYnZPa6BruTFUKsAi2cgxnrqwpXfDyW1IbuUW5ALw=');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 40px 0;
+}
+
+.auth-container {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    text-align: center;
+    border-top: 5px solid #009A44;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.login-container {
+    max-width: 360px;
+}
+
+.register-container {
+    max-width: 420px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-header {
+    margin-bottom: 15px;
+}
+
+.auth-header i {
+    font-size: 3rem;
+    color: #009A44;
+}
+
+.auth-container h1 {
+    color: #009A44;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.auth-container h2 {
+    margin-bottom: 5px;
+}
+
+.auth-container p {
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    padding-right: 45px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #999;
+    z-index: 2;
+}
+
+.btn {
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(135deg, #009A44, #00642E);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    box-shadow: 0 5px 15px rgba(0, 154, 68, 0.4);
+}
+
+.extra-links {
+    margin-top: 15px;
+    font-size: 0.9rem;
+}
+
+.extra-links a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.extra-links a:hover {
+    text-decoration: underline;
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.remember-me input {
+    margin-right: 5px;
+}
+
+/* --- Registration Specific --- */
+#password-strength-requirements {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+#password-strength-requirements ul {
+    list-style: none;
+    padding: 0;
+}
+
+#password-strength-requirements li {
+    margin-bottom: 5px;
+    color: #dc3545; /* Red for not met */
+}
+
+#password-strength-requirements li.valid {
+    color: #28a745; /* Green for met */
+}
+
+#password-strength-requirements li.valid::before {
+    content: '✓ ';
+    font-weight: bold;
+}
+
+#password-strength-requirements li::before {
+    content: '✗ ';
+    font-weight: bold;
+}
+
+/* --- Login Specific --- */
+.role-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.role-option {
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+    color: #555;
+}
+
+.role-option img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 8px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.role-option span {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.role-option:hover {
+    border-color: #009A44;
+    color: #009A44;
+}
+
+.role-option:hover img {
+    transform: scale(1.1);
+}
+
+.role-option.selected {
+    background-color: #e6f5ec;
+    border-color: #009A44;
+    color: #00642E;
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 154, 68, 0.2);
+}
+
+.login-btn {
+    animation: subtle-glow 2.5s infinite alternate;
+}
+
+.login-btn:hover {
+    box-shadow: 0 0 15px rgba(0, 154, 68, 0.6), 0 0 5px rgba(0, 154, 68, 0.4);
+    animation-play-state: paused; /* Pause the subtle glow on hover */
+}
+
+@keyframes subtle-glow {
+    from {
+        box-shadow: 0 0 5px rgba(0, 154, 68, 0.3);
+    }
+    to {
+        box-shadow: 0 0 15px rgba(0, 154, 68, 0.5);
+    }
+}

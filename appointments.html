@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reusing styles from medical_records.html for consistency */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-image: url('https://plus.unsplash.com/premium_photo-1661767897334-bbfbdfdc4d1a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWVkaWNhbHxlbnwwfHwwfHx8MA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #333;
+            padding-top: 90px; /* Add padding to push content below fixed header */
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #009A44, #00642E);
+            color: white;
+            padding: 20px 0;
+            position: fixed; /* Make header sticky */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 50px;
+            margin-right: 15px;
+            border-radius: 50%;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            margin-right: 15px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        nav ul li a i {
+            margin-right: 6px;
+            font-size: 1.1rem;
+        }
+
+        nav ul li a.logout-btn {
+            background-color: #ff6b6b;
+            font-weight: 600;
+        }
+
+        nav ul li a.logout-btn:hover {
+            background-color: #ff5252;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            background-color: #1714ee;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            padding: 8px 0;
+            z-index: 1;
+            display: none;
+        }
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .header-search {
+            position: relative;
+        }
+
+        .header-search #headerSearchInput {
+            width: 0;
+            padding: 8px 0;
+            border: none;
+            border-bottom: 2px solid white;
+            background: transparent;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.4s ease;
+            opacity: 0;
+        }
+
+        .header-search #headerSearchInput::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .header-search.active #headerSearchInput {
+            width: 200px;
+            padding: 8px 10px;
+            opacity: 1;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 5px;
+            font-size: 1rem;
+        }
+
+        .save-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .save-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            background-color: #6c757d;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.5rem;
+        }
+
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .appointments-table-container {
+            margin-top: 50px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        thead th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #333;
+        }
+
+        tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .action-btn {
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .cancel-btn { background-color: #dc3545; }
+        .cancel-btn:hover { background-color: #c82333; }
+
+        .view-btn { background-color: #007bff; }
+        .view-btn:hover { background-color: #0056b3; }
+
+        .remind-btn { background-color: #17a2b8; }
+        .remind-btn:hover { background-color: #138496; }
+
+        #appointmentSearchInput {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-laptop-medical"></i>
+                <img src="https://th.bing.com/th/id/OIP.rvsVTBcx442mamhkARD2QAAAAA?w=164&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="Logo">
+                <h1>MESMTF</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a></li>
+                    <li class="header-search">
+                        <a href="#" id="search-icon-toggle"><i class="fas fa-search"></i></a>
+                        <input type="text" id="headerSearchInput" placeholder="Search...">
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle"><i class="fas fa-globe"></i> Translate</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" data-lang="en">English</a></li>
+                            <li><a href="#" data-lang="af">Afrikaans</a></li>
+                            <li><a href="#" data-lang="de">German</a></li>
+                            <!-- Add other language codes as needed -->
+                        </ul>
+                    </li>
+                    <li><a href="login.html" class="logout-btn">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <a href="dashboard.html" class="back-btn" title="Back to Dashboard">&larr;</a>
+        <div id="patient-view">
+            <h1>Book an Appointment</h1>
+            <form id="appointmentForm">
+                <div class="form-group">
+                    <label for="patientName">Patient Name:</label>
+                    <input type="text" id="patientName" name="patientName" required>
+                </div>
+                <div class="form-group">
+                    <label for="patientEmail">Patient Email:</label>
+                    <input type="email" id="patientEmail" name="patientEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="doctor">Select Doctor:</label>
+                    <select id="doctor" name="doctor" required>
+                        <option value="">-- Please choose a doctor --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="appointmentDate">Date:</label>
+                    <input type="date" id="appointmentDate" name="appointmentDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="appointmentTime">Time:</label>
+                    <select id="appointmentTime" name="appointmentTime" required>
+                        <option value="">-- Select a date and doctor first --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reason">Reason for Visit:</label>
+                    <textarea id="reason" name="reason" rows="4"></textarea>
+                </div>
+                <button type="submit" class="save-btn">Book Appointment</button>
+            </form>
+        </div>
+
+        <div id="doctor-view" style="display: none;">
+            <div class="appointments-table-container">
+                <h2 id="appointments-title">Upcoming Appointments</h2>
+                <input type="text" id="appointmentSearchInput" placeholder="Search by patient, doctor, or status...">
+                <table id="appointmentsTable">
+                    <thead>
+                        <tr>
+                            <th>Patient Name</th>
+                            <th>Doctor</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Appointments will be dynamically inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Google Translate Element -->
+    <div id="google_translate_element" style="display:none;"></div>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+        }
+    </script>
+    <script src="modal.js"></script>
+    <script>
+        const appointmentForm = document.getElementById('appointmentForm');
+        const appointmentsTableBody = document.querySelector('#appointmentsTable tbody');
+        const bookBtn = document.querySelector('#patient-view .save-btn');
+        const patientView = document.getElementById('patient-view');
+        const doctorView = document.getElementById('doctor-view');
+        const appointmentsTitle = document.getElementById('appointments-title');
+        let appointments = [];
+        const doctorSelect = document.getElementById('doctor');
+        const appointmentDateInput = document.getElementById('appointmentDate');
+
+        function saveAppointments() {
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+        }
+
+        function loadAppointments() {
+            const storedAppointments = JSON.parse(localStorage.getItem('appointments'));
+            if (storedAppointments && storedAppointments.length > 0) {
+                appointments = storedAppointments;
+            } else {
+                // If no appointments in storage, create some sample data
+                appointments = [
+                    { id: Date.now(), patientName: 'John Doe', patientEmail: 'john.doe@example.com', doctor: 'Dr. Smith - General Physician', date: '2024-08-01', time: '10:30', reason: 'Annual Check-up', status: 'Confirmed' }
+                ];
+                saveAppointments();
+            }
+        }
+
+        function resetAppointmentForm() {
+            appointmentForm.reset();
+            const fields = appointmentForm.querySelectorAll('input, select, textarea');
+            fields.forEach(field => field.readOnly = false);
+            bookBtn.textContent = 'Book Appointment';
+            bookBtn.style.display = 'block';
+        }
+
+        function renderAppointments() {
+            appointmentsTableBody.innerHTML = '';
+            const userRole = localStorage.getItem('userRole');
+            const loggedInUserEmail = localStorage.getItem('email');
+
+            const appointmentsToDisplay = appointments.filter(app => {
+                if (userRole === 'doctor') return true; // Doctors see all
+                return app.patientEmail === loggedInUserEmail; // Patients see only their own
+            });
+
+            appointmentsToDisplay.forEach(app => {
+                const row = appointmentsTableBody.insertRow();
+                row.dataset.id = app.id;
+                row.dataset.email = app.patientEmail;
+                row.dataset.reason = app.reason;
+
+                row.insertCell().textContent = app.patientName;
+                row.insertCell().textContent = app.doctor;
+                row.insertCell().textContent = app.date;
+                row.insertCell().textContent = app.time;
+                row.insertCell().textContent = app.status;
+                row.insertCell().innerHTML = `<a href="#" class="action-btn view-btn">View</a> <a href="#" class="action-btn remind-btn">Remind</a> <a href="#" class="action-btn cancel-btn">Cancel</a>`;
+            });
+        }
+
+        appointmentForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const patientName = document.getElementById('patientName').value;
+            const patientEmail = document.getElementById('patientEmail').value;
+            const doctor = document.getElementById('doctor').value;
+            const date = document.getElementById('appointmentDate').value;
+            const time = document.getElementById('appointmentTime').value;
+            const reason = document.getElementById('reason').value;
+
+            if (!patientName || !patientEmail || !doctorSelect.value || !date || !time) {
+                alert('Please fill out all required fields.');
+                return;
+            }
+
+            // --- Double-booking check ---
+            const isSlotTaken = appointments.some(app => 
+                app.doctor === doctorSelect.value && 
+                app.date === date && 
+                app.time === time.value
+            );
+
+            if (isSlotTaken) {
+                alert('This time slot is already booked for the selected doctor. Please choose another time.');
+                return;
+            }
+
+            const newAppointment = {
+                id: Date.now(), 
+                patientName, 
+                patientEmail, 
+                doctor: doctorSelect.value, 
+                date, 
+                time: time.value, 
+                reason, 
+                status: 'Confirmed'
+            };
+
+            appointments.unshift(newAppointment);
+            saveAppointments();
+            renderAppointments();
+            resetAppointmentForm();
+            alert('Appointment booked successfully!');
+        });
+
+        appointmentsTableBody.addEventListener('click', function(event) {
+            const target = event.target.closest('a.action-btn');
+            if (!target) return;
+
+            const row = target.closest('tr');
+            const appointmentId = Number(row.dataset.id);
+            const appointment = appointments.find(a => a.id === appointmentId);
+            if (!appointment) return;
+
+            event.preventDefault();
+
+            if (target.classList.contains('view-btn')) {
+                resetAppointmentForm();
+                
+                document.getElementById('patientName').value = row.cells[0].textContent;
+                document.getElementById('patientEmail').value = row.dataset.email || '';
+                document.getElementById('doctor').value = row.cells[1].textContent;
+                document.getElementById('appointmentDate').value = row.cells[2].textContent;
+                document.getElementById('appointmentTime').value = row.cells[3].textContent;
+                document.getElementById('reason').value = row.dataset.reason || '';
+
+                const fields = appointmentForm.querySelectorAll('input, select, textarea');
+                fields.forEach(field => field.readOnly = true);
+                bookBtn.style.display = 'none';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            } else if (target.classList.contains('remind-btn')) {
+                const patientName = row.cells[0].textContent;
+                const doctor = row.cells[1].textContent;
+                const date = row.cells[2].textContent;
+                const time = row.cells[3].textContent;
+                const patientEmail = row.dataset.email;
+                const reason = row.dataset.reason || 'your appointment';
+
+                const subject = encodeURIComponent(`Appointment Reminder: ${reason} on ${date}`);
+                const body = encodeURIComponent(`Dear ${patientName},\n\nThis is a friendly reminder for your appointment with ${doctor} on ${date} at ${time}.\n\nReason for visit: ${reason}\n\nPlease arrive a few minutes early.\n\nThank you,\nMESMTF Clinic`);
+
+                window.location.href = `mailto:${patientEmail}?subject=${subject}&body=${body}`;
+
+            } else if (target.classList.contains('cancel-btn')) {
+                if (confirm('Are you sure you want to cancel this appointment?')) {
+                    appointments = appointments.filter(a => a.id !== appointmentId);
+                    saveAppointments();
+                    renderAppointments();
+                    resetAppointmentForm();
+                }
+            }
+        });
+
+        document.getElementById('appointmentSearchInput').addEventListener('keyup', function() {
+            const filter = this.value.toUpperCase();
+            const rows = appointmentsTableBody.getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let rowMatch = false;
+                // Loop through all cells except the last one (Actions)
+                for (let j = 0; j < cells.length - 1; j++) {
+                    const cell = cells[j];
+                    if (cell) {
+                        const txtValue = cell.textContent || cell.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            rowMatch = true;
+                            break;
+                        }
+                    }
+                }
+                if (rowMatch) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        });
+
+        // --- Page Initialization ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const userRole = localStorage.getItem('userRole');
+            loadAppointments();
+
+            // --- Populate Doctor Dropdown ---            
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const doctors = users.filter(user => user.role === 'doctor');
+
+            if (doctors.length > 0) {
+                doctors.forEach(doc => {
+                    const option = document.createElement('option');
+                    // Store the doctor's email in a data attribute to look up their availability
+                    option.dataset.email = doc.email;
+                    option.value = `Dr. ${doc.fullName}`; // The value is what gets saved
+                    option.textContent = `Dr. ${doc.fullName}`;
+                    doctorSelect.appendChild(option);
+                });
+            } else {
+                // Handle case where no doctors are registered
+                const option = document.createElement('option');
+                option.textContent = 'No doctors available';
+                option.disabled = true;
+                doctorSelect.appendChild(option);
+            }
+
+            // --- Update Time Slots Based on Doctor and Date ---
+            function updateAvailableTimes() {
+                const selectedDoctorOption = doctorSelect.options[doctorSelect.selectedIndex];
+                const doctorEmail = selectedDoctorOption.dataset.email;
+                const selectedDate = new Date(appointmentDateInput.value + 'T00:00:00'); // Avoid timezone issues
+                const dayOfWeek = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
+
+                const allAvailabilities = JSON.parse(localStorage.getItem('doctorAvailability')) || {};
+                const doctorAvailability = allAvailabilities[doctorEmail] || {};
+                const availableSlots = doctorAvailability[dayOfWeek] || [];
+
+                const timeSelect = document.getElementById('appointmentTime');
+                timeSelect.innerHTML = '<option value="">-- Select a time --</option>';
+
+                if (availableSlots.length > 0) {
+                    availableSlots.forEach(time => {
+                        // Check if this slot is already booked
+                        const isBooked = appointments.some(app => 
+                            app.doctor === doctorSelect.value && 
+                            app.date === appointmentDateInput.value &&
+                            app.time === time
+                        );
+
+                        const option = document.createElement('option');
+                        option.value = time;
+                        option.textContent = time + (isBooked ? ' (Booked)' : '');
+                        option.disabled = isBooked;
+                        timeSelect.appendChild(option);
+                    });
+                } else {
+                    const option = document.createElement('option');
+                    option.textContent = 'No available slots';
+                    option.disabled = true;
+                    timeSelect.appendChild(option);
+                }
+            }
+
+            doctorSelect.addEventListener('change', updateAvailableTimes);
+            appointmentDateInput.addEventListener('change', updateAvailableTimes);
+
+            if (userRole === 'doctor') {
+                patientView.style.display = 'none';
+                doctorView.style.display = 'block';
+                appointmentsTitle.textContent = 'Appointment Inbox';
+            } else {
+                patientView.style.display = 'block';
+                doctorView.style.display = 'block'; // Show table for patients too
+                appointmentsTitle.textContent = 'My Appointments';
+            }
+            renderAppointments();
+        });
+
+        // Header Search Logic
+        const searchIconToggle = document.getElementById('search-icon-toggle');
+        const headerSearchContainer = searchIconToggle.parentElement;
+        const headerSearchInput = document.getElementById('headerSearchInput');
+
+        searchIconToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            headerSearchContainer.classList.toggle('active');
+            if (headerSearchContainer.classList.contains('active')) {
+                headerSearchInput.focus();
+            }
+        });
+
+        headerSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const query = headerSearchInput.value.trim();
+                if (query) {
+                    window.location.href = `dashboard.html?q=${encodeURIComponent(query)}`;
+                }
+            }
+        });
+
+        // --- Translation Logic ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const translateDropdown = document.querySelector('.dropdown-menu');
+            if (translateDropdown) {
+                translateDropdown.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const target = event.target;
+                    if (target.tagName === 'A') {
+                        const langCode = target.dataset.lang;
+                        if (langCode) {
+                            const translateElement = document.querySelector('#google_translate_element select');
+                            if (translateElement) {
+                                translateElement.value = langCode;
+                                translateElement.dispatchEvent(new Event('change'));
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
